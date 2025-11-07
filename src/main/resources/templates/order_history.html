@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome CDN (아이콘 사용을 위해) --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <title>JavaBean - 지난 주문 내역</title>
+    <style>
+        /* ==============================================
+           1. 기본 및 레이아웃 설정 (기존 프레임 유지)
+         ============================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Malgun Gothic', sans-serif;
+            color: #333;
+        }
+
+        body {
+            background-color: #e9e9e9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .mobile-frame {
+            width: 375px; 
+            height: 812px;
+            max-width: 430px; 
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .fixed-top {
+            flex-shrink: 0;
+        }
+        
+        main.container {
+            flex-grow: 1;
+            overflow-y: auto; /* 세로 스크롤 허용 */
+            background-color: #f7f3f2; /* 이미지와 동일한 배경색 */
+            padding: 20px 0; /* 상하 패딩 */
+        }
+
+        .fixed-bottom {
+            flex-shrink: 0;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+            background-color: #fff;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ==============================================
+           2. 상단 바 / 하단 바 (기존 스타일 재사용 및 수정)
+         ============================================== */
+
+        /* --- (1) 상단 고정 영역 --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between; /* 로고와 아이콘을 양 끝으로 정렬 */
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #F8C79D;
+            height: 60px;
+        }
+        
+        .top-bar .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-bar .logo-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .top-bar .logo-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #5A3E2B;
+        }
+        
+        .top-bar .notification-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* --- (2) 메인 콘텐츠 영역 (지난 주문 내역) --- */
+        .order-history-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px; /* 이미지와 간격 맞춤 */
+        }
+
+        .order-list-container {
+            background-color: #f7f3f2; /* 배경색 유지 */
+        }
+
+        .order-item {
+            background-color: #f7f3f2; /* 배경색 유지 */
+            padding: 15px 20px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start; /* 이미지와 텍스트 상단 정렬 */
+            position: relative;
+        }
+
+        .order-item-image {
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+            background-color: #fff; /* 이미지 배경색 */
+            border-radius: 10px; /* 이미지 테두리 둥글게 */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08); /* 이미지 그림자 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .order-item-image img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+        }
+
+        .order-item-details {
+            display: grid;
+            grid-template-columns: 80px 1fr; /* 메뉴명, 종류, 가격, 수량 텍스트 고정 너비 */
+            gap: 5px 10px; /* 행 간격, 열 간격 */
+            width: calc(100% - 100px); /* 이미지 너비 + gap 제외한 공간 */
+        }
+
+        .detail-label {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .detail-value.ice {
+            color: #007AFF; /* ICE 파란색 */
+            font-weight: bold;
+        }
+        .detail-value.hot {
+            color: #D0021B; /* HOT 빨간색 */
+            font-weight: bold;
+        }
+
+        .order-item .divider-line {
+            position: absolute;
+            bottom: 0;
+            left: 20px; /* 왼쪽 여백 */
+            right: 20px; /* 오른쪽 여백 */
+            height: 1px;
+            background-color: #e0e0e0; /* 구분선 색상 */
+        }
+        /* 마지막 아이템에는 구분선 없음 */
+        .order-list-container .order-item:last-of-type .divider-line {
+            display: none;
+        }
+
+
+        /* --- (3) 하단 고정 영역 (수정된 탭 바 디자인 적용) --- */
+        .tab-bar {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end; /* [수정] center -> flex-end 로 변경하여 하단 정렬 */
+            background-color: #fff; /* 하단 바 배경색 */
+            padding: 10px 0;
+            height: 70px; /* 높이 유지 (아이콘이 이 위로 돌출됨) */
+            border-top-left-radius: 20px; /* 상단 좌측 라운드 */
+            border-top-right-radius: 20px; /* 상단 우측 라운드 */
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .tab-bar a {
+            color: #888; /* 기본 아이콘 색상 */
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 14px; /* 텍스트 크기 */
+            font-weight: 500;
+            gap: 4px; /* 아이콘과 텍스트 간격 */
+        }
+
+        .tab-bar a .tab-icon {
+            font-size: 24px; /* 아이콘 크기 */
+        }
+
+        .tab-bar a.active {
+            color: #5A3E2B; /* 활성화된 아이콘/텍스트 색상 */
+        }
+
+        .tab-bar a.active .tab-icon-wrapper {
+            width: 55px; /* 이미지에 맞춰 원형 배경 크기 */
+            height: 55px;
+            background-color: #F8C79D; /* 이미지의 활성화 아이콘 배경색 */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-bar a:not(.active) .tab-icon-wrapper {
+            margin-bottom: 2px; /* 비활성화도 간격 유지 */
+        }
+
+        .tab-bar a.active .tab-icon {
+            color: #5A3E2B; /* 활성화 아이콘 색상 */
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="mobile-frame">
+
+        <div class="fixed-top">
+            <header class="top-bar">
+                <div class="logo-section">
+                    <span class="logo-icon">☕</span>
+                    <span class="logo-text">JavaBean</span>
+                </div>
+                <span class="notification-icon">
+                    <i class="fa-solid fa-bell" style="color: #5A3E2B;"></i>
+                </span>
+            </header>
+        </div> 
+
+        <main class="container">
+            
+            <h2 class="order-history-header">지난 주문 내역</h2>
+
+            <div class="order-list-container">
+                <div class="order-item">
+                    <div class="order-item-image">
+                        <img src="/miniProject/images/image2.png" alt="아메리카노">
+                    </div>
+                    <div class="order-item-details">
+                        <span class="detail-label">메뉴명</span><span class="detail-value">아메리카노</span>
+                        <span class="detail-label">종류</span><span class="detail-value ice">ICE</span>
+                        <span class="detail-label">가격</span><span class="detail-value">12,000원</span>
+                        <span class="detail-label">수량</span><span class="detail-value">4개</span>
+                    </div>
+                    <div class="divider-line"></div>
+                </div>
+
+                <div class="order-item">
+                    <div class="order-item-image">
+                        <img src="/miniProject/images/cafelatte.png" alt="카페라떼">
+                    </div>
+                    <div class="order-item-details">
+                        <span class="detail-label">메뉴명</span><span class="detail-value">카페라떼</span>
+                        <span class="detail-label">종류</span><span class="detail-value ice">ICE</span>
+                        <span class="detail-label">가격</span><span class="detail-value">6,000원</span>
+                        <span class="detail-label">수량</span><span class="detail-value">2개</span>
+                    </div>
+                    <div class="divider-line"></div>
+                </div>
+
+                <div class="order-item">
+                    <div class="order-item-image">
+                        <img src="/miniProject/images/vanillaLatte.png" alt="바닐라라떼">
+                    </div>
+                    <div class="order-item-details">
+                        <span class="detail-label">메뉴명</span><span class="detail-value">바닐라라떼</span>
+                        <span class="detail-label">종류</span><span class="detail-value hot">HOT</span>
+                        <span class="detail-label">가격</span><span class="detail-value">12,000원</span>
+                        <span class="detail-label">수량</span><span class="detail-value">4개</span>
+                    </div>
+                    <div class="divider-line"></div>
+                </div>
+
+                <div class="order-item">
+                    <div class="order-item-image">
+                        <img src="/miniProject/images/image2.png" alt="아메리카노">
+                    </div>
+                    <div class="order-item-details">
+                        <span class="detail-label">메뉴명</span><span class="detail-value">아메리카노</span>
+                        <span class="detail-label">종류</span><span class="detail-value ice">ICE</span>
+                        <span class="detail-label">가격</span><span class="detail-value">12,000원</span>
+                        <span class="detail-label">수량</span><span class="detail-value">1개</span>
+                    </div>
+                    <!-- 마지막 아이템에는 구분선 없음 --></div>
+
+            </div>
+
+        </main> 
+
+        <div class="fixed-bottom">
+            <nav class="tab-bar">
+                <a href="main">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon">🏠</span>
+                    </div>
+                    <span>홈</span>
+                </a>
+                <a href="order_history">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon">📝</span>
+                    </div>
+                    <span>주문내역</span>
+                </a>
+                <a href="#" class="active">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon">☕</span>
+                    </div>
+                    <span>주문하기</span>
+                </a>
+                <a href="#">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon">🛍️</span>
+                    </div>
+                    <span>장바구니</span>
+                </a>
+                <a href="#">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon">👤</span>
+                    </div>
+                    <span>계정관리</span>
+                </a>
+            </nav>
+        </div> 
+    </div> 
+</body>
+</html>
