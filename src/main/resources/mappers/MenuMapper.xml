@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.miniproject.cafe.Mapper.MenuMapper">
+
+    <select id="findAllMenus" resultType="com.miniproject.cafe.VO.MenuVO">
+        SELECT
+            menu_id,
+            menu_name,
+            price,
+            description,
+            image_url,
+            category
+        FROM
+            MENU
+        ORDER BY
+            category, price;
+    </select>
+
+    <!-- (수정) resultMap 대신 resultType 사용 -->
+    <select id="findMenusByCategory" resultType="com.miniproject.cafe.VO.MenuVO" parameterType="String">
+        SELECT
+            menu_id,
+            menu_name,
+            price,
+            description,
+            image_url,
+            category
+        FROM
+            MENU
+        WHERE
+            category = #{category}
+        ORDER BY
+            price;
+    </select> <!-- (오타 수정) </s_select> -> </select> -->
+
+    <!-- (수정) resultMap 대신 resultType 사용 -->
+    <select id="findMenuById" resultType="com.miniproject.cafe.VO.MenuVO" parameterType="String">
+        SELECT
+            menu_id,
+            menu_name,
+            price,
+            description,
+            image_url,
+            category
+        FROM
+            MENU
+        WHERE
+            menu_id = #{menuId};
+    </select>
+
+</mapper>

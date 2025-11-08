@@ -17,4 +17,10 @@ public class HomeController {
     public String order_history() {
         return "order_history";
     }
+
+    @GetMapping("/order_form_list")
+    public String order_form_list() {
+        return "order_form_list";
+    }
+
 }

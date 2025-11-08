@@ -1,0 +1,1 @@
+'mini_pjt_1', 'delete_all_orders_at_midnight', 'pjt1@%', 'SYSTEM', 'RECURRING', NULL, '1', 'DAY', '2025-11-09 00:00:00', NULL, 'ENABLED', '1', 'utf8mb4', 'utf8mb4_0900_ai_ci', 'utf8mb4_unicode_ci'

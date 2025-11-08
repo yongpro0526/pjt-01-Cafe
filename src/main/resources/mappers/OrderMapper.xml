@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.miniproject.cafe.Mapper.OrderMapper">
+
+    <select id="findOrderById" resultType="com.miniproject.cafe.VO.OrderVO" parameterType="String">
+        SELECT
+            order_id,
+            u_id,
+            order_status,
+            total_price,
+            pickup_method as orderType,
+            order_time,
+            TOTAL_QUANTITY as totalQuantity
+        FROM
+            orders
+        WHERE
+            order_id = #{id}
+    </select>
+
+    <select id="findAllAdminOrders" resultType="com.miniproject.cafe.VO.OrderVO">
+        SELECT
+            order_id,
+            u_id,
+            order_status,
+            total_price,
+            pickup_method as orderType,
+            order_time,
+            TOTAL_QUANTITY as totalQuantity
+        FROM
+            orders
+        ORDER BY
+            order_id DESC
+    </select>
+
+    <insert id="insertOrder" parameterType="com.miniproject.cafe.VO.OrderVO">
+        INSERT INTO ORDERS (
+        order_id,
+        u_id,
+        order_status,
+        total_price,
+        pickup_method,
+        order_time,
+        TOTAL_QUANTITY
+        ) VALUES (
+        #{orderId},
+        #{uId},
+        #{orderStatus},
+        #{totalPrice},
+        #{orderType},
+        #{orderTime},
+        #{totalQuantity}
+        )
+    </insert>
+
+</mapper>

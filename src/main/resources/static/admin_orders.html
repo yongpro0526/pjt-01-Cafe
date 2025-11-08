@@ -348,10 +348,15 @@
 
         // (중요) 실제 백엔드 API 엔드포인트로 수정해야 합니다.
         // OrderVO 객체의 리스트(List<OrderVO>)를 반환해야 합니다.
-        const API_ENDPOINT = '/api/orders/admin-list';
+        // (수정) iFrame 환경에서 상대 경로가 작동하지 않는 오류를
+        //        해결하기 위해, 전체 URL을 사용합니다.
+        //        (서버가 http://localhost:8383 에서 실행 중이라고 가정)
+        const API_ENDPOINT = 'http://localhost:8383/api/orders/admin-list';
 
-        // 주문 목록을 실시간으로 새로고침할 간격 (ms) (예: 10초)
-        const POLLING_INTERVAL = 10000;
+        // (수정) 주문 목록을 실시간으로 새로고침할 간격 (ms)
+        // 10000ms (10초) -> 3000ms (3초)로 변경
+        // 이 값을 줄이면 더 "즉시" 반응하는 것처럼 보입니다.
+        const POLLING_INTERVAL = 3000;
 
         // DOM 요소 캐시
         const orderGrid = document.getElementById('order-grid-container');
@@ -366,7 +371,8 @@
          */
         async function fetchAndRenderOrders() {
             try {
-                const response = await fetch(API_ENDPOINT);
+                // (수정) fetch가 항상 최신 데이터를 요청하도록 cache: 'no-store' 옵션 추가
+                const response = await fetch(API_ENDPOINT, { cache: 'no-store' });
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -378,7 +384,7 @@
                 // 렌더링 전 그리드 비우기
                 orderGrid.innerHTML = '';
 
-                if (orders.length === 0) {
+                if (!orders || orders.length === 0) {
                     // 주문이 없는 경우
                     orderGrid.innerHTML = '<div class="order-grid-empty">현재 접수된 주문이 없습니다.</div>';
                 } else {
@@ -391,7 +397,7 @@
 
             } catch (error) {
                 console.error('주문 목록을 가져오는 데 실패했습니다:', error);
-                orderGrid.innerHTML = '<div class="order-grid-empty">주문 목록을 불러오는 중 오류가 발생했습니다.</div>';
+                orderGrid.innerHTML = '<div class="order-grid-empty">주문 목록을 불러오는 중 오류가 발생했습니다. (서버 연결 확인)</div>';
             }
         }
 
@@ -412,11 +418,13 @@
 
             // 2. 주문 아이템 목록(orderItemList)을 <li> 태그로 변환
             // (참고: API가 'orderItemList' 배열을 반환한다고 가정)
-            const menuItemsHtml = order.orderItemList && Array.isArray(order.orderItemList)
-                ? order.orderItemList.map(item => `
+            // (수정) orderItemList가 null일 경우를 대비하여 기본값(빈 배열) 제공
+            const menuItemsHtml = (order.orderItemList || []).map(item => `
                     <li>${item.menuItemName || '알 수 없는 메뉴'} <span>${item.quantity || 0}</span></li>
-                `).join('')
-                : '<li>주문 내역이 없습니다.</li>';
+                `).join('');
+
+            // (수정) menuItemsHtml이 비어있을 경우 (주문 아이템이 없는 경우)
+            const finalMenuItemsHtml = menuItemsHtml === '' ? '<li>주문 내역이 없습니다.</li>' : menuItemsHtml;
 
             // 3. 최종 HTML 카드 반환
             return `
@@ -424,15 +432,17 @@
                     <div>
                         <div class="card-header">
                             <span class="order-id">${order.orderId || '#000'}</span>
+                            <!-- (수정) orderTime이 null일 경우를 대비 -->
                             <span class="order-time">${order.orderTime || '00:00'}</span>
                         </div>
                         <ul class="menu-list">
-                            ${menuItemsHtml}
+                            ${finalMenuItemsHtml}
                         </ul>
                     </div>
                     <div>
                         <div class="card-footer-row">
                             <span>총 수량</span>
+                            <!-- (수정) totalQuantity가 null일 경우를 대비 -->
                             <span>${order.totalQuantity || 0}</span>
                         </div>
                         <div class="card-footer-total">
@@ -466,7 +476,7 @@
         // 4. (실시간 업데이트) 설정된 간격(POLLING_INTERVAL)마다 주문 목록 새로고침
         setInterval(fetchAndRenderOrders, POLLING_INTERVAL);
 
-        console.log('Admin Order Page script loaded. Polling every 10 seconds.');
+        console.log(`Admin Order Page script loaded. Polling every ${POLLING_INTERVAL / 1000} seconds.`);
 
     });
 </script>

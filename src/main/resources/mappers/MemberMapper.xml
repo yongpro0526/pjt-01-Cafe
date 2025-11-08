@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.miniproject.cafe.Mapper.MemberMapper">
+
+    <select id="findMemberById" resultType="com.miniproject.cafe.VO.MemberVO" parameterType="String">
+        SELECT
+            u_id,
+            u_pw,
+            username,
+            email,
+            order_num,
+            menu_id
+        FROM
+            Member
+        WHERE
+            u_id = #{uId};
+    </select>
+
+    <!-- 회원가입 -->
+    <insert id="insertMember" parameterType="com.miniproject.cafe.VO.MemberVO">
+        INSERT INTO Member (
+            u_id,
+            u_pw,
+            username,
+            email,
+            order_num,
+            menu_id
+        )
+        VALUES (
+                   #{uId},
+                   #{uPw},
+                   #{username},
+                   #{email},
+                   #{orderNum},
+                   #{menuId}
+               );
+    </insert>
+
+</mapper>
