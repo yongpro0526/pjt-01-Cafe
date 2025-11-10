@@ -388,11 +388,7 @@
         const notificationPopup = document.getElementById('notification-popup');
 
 
-        // --- 함수 정의 ---
-
-        /**
-         * API에서 주문 데이터를 가져와 화면에 렌더링합니다.
-         */
+        // API에서 주문 데이터를 가져와 화면에 렌더링
         async function fetchAndRenderOrders() {
             try {
                 const response = await fetch(API_ENDPOINT_LIST, { cache: 'no-store' });
@@ -410,9 +406,7 @@
             }
         }
 
-        /**
-         * 주문 배열을 받아 화면에 렌더링합니다.
-         */
+        // 주문 배열을 받아 화면에 렌더링
         function renderOrders(orders) {
             orderGrid.innerHTML = '';
 
@@ -426,9 +420,8 @@
             }
         }
 
-        /**
-         * 주문 객체(order)를 받아 HTML 카드 문자열을 생성합니다.
-         */
+
+        // 주문 객체(order)를 받아 HTML 카드 문자열을 생성
         function createOrderCard(order) {
             // 1. 주문 유형(orderType)에 따른 CSS 클래스 결정
             let cardTypeClass = 'type-default';
