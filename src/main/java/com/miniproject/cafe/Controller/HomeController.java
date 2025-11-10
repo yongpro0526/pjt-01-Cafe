@@ -18,4 +18,9 @@ public class HomeController {
         return "order_history";
     }
 
+    @GetMapping("/food")
+    public String food() {
+        return "food";
+    }
+
 }

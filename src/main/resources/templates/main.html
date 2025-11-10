@@ -1,35 +1,14 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns="">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <title>Java Coffee</title>
-    <link rel="stylesheet" href="/css/main.css">
 </head>
-<body>
-
-    <div class="mobile-frame">
-
-        <div class="fixed-top">
-            <header class="top-bar">
-                <div class="logo-section">
-                    <span class="logo-icon">☕</span>
-                    <span class="logo-text">JavaBean</span>
-                </div>
-                <span class="notification-icon" id="notification-trigger">
-                    <i class="fa-solid fa-bell" style="color: #5A3E2B;"></i>
-                    <div class="notification-popup" id="notification-popup">
-                        <div class="popup-arrow"></div> <p>주문내역이 없습니다.</p>
-                    </div>
-                </span>
-            </header>
-            
-            <div class="main-banner">
-                <img src="/images/image1.png" alt="Summer Promotion">
-                <span class="banner-pagination">1/2</span>
-            </div>
-        </div> 
+<th:block th:replace="~{./include/userBaseLayout :: setContent( ~{:: .wrap} ) }">
+    <div class="wrap">
+        <div class="main-banner">
+            <img src="/images/메인배너.png" alt="Summer Promotion">
+            <span class="banner-pagination">1/2</span>
+        </div>
 
         <main class="container">
             <section class="previous-orders">
@@ -64,51 +43,15 @@
             <section class="reward-section">
                 <div class="reward-item">
                     <span class="icon stamp-icon"><i class="fa-solid fa-stamp"></i></span>
-                    <span class="text">스탬프 6/10</span>
+                    <span class="text">스탬프 0/10</span>
                 </div>
                 <div class="divider"></div>
                 <div class="reward-item">
                     <span class="icon coupon-icon">🎟️</span>
-                    <span class="text">쿠폰 1</span>
+                    <span class="text">쿠폰 0</span>
                 </div>
             </section>
-        </main> 
-
-        <div class="fixed-bottom">
-            <nav class="tab-bar">
-                <a href="main">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">🏠</span>
-                    </div>
-                    <span>홈</span>
-                </a>
-                <a href="order_history">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">📝</span>
-                    </div>
-                    <span>주문내역</span>
-                </a>
-                <a href="#" class="active">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">☕</span>
-                    </div>
-                    <span>주문하기</span>
-                </a>
-                <a href="#">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">🛍️</span>
-                    </div>
-                    <span>장바구니</span>
-                </a>
-                <a href="#">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">👤</span>
-                    </div>
-                    <span>계정관리</span>
-                </a>
-            </nav>
-        </div> 
-    </div> 
-</body>
-<script src="/js/main.js"></script>
+        </main>
+    </div>
+</th:block>
 </html>

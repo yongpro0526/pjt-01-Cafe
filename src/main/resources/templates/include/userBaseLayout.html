@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="setContent(content)">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+
+    <body>
+    <div class="mobile-frame">
+
+        <div class="fixed-top">
+            <header class="top-bar">
+                <div class="logo-section">
+                    <span class="logo-icon"><img src="/images/자바빈로고 2.png" alt=""></span>
+                    <span class="logo-text"><img src="/images/자바빈로고 1.png" alt=""></span>
+                </div>
+                <span class="notification-icon" id="notification-trigger">
+                    <a href="#" style="text-decoration: none;"><img src="/images/알림.png" width="23px" height="23px" alt="알림"></a>
+                    <div class="notification-popup" id="notification-popup">
+                        <div class="popup-arrow"></div>
+                        <p>주문내역이 없습니다.</p>
+                    </div>
+                </span>
+            </header>
+        </div>
+
+        <th:block th:replace="${content}"></th:block>
+
+        <div class="fixed-bottom">
+            <nav class="tab-bar">
+                <a href="main">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon"><img src="/images/home.png" alt="홈" width="40px" height="40px"></span>
+                    </div>
+                    <span>홈</span>
+                </a>
+
+                <a href="order_history">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon"><img src="/images/list.png" alt="주문내역" width="35px" height="35px"></span>
+                    </div>
+                    <span>주문내역</span>
+                </a>
+
+                <a href="coffee.html" class="active">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon"><img src="/images/coffee.png" alt="주문하기" width="50px" height="50px"></span>
+                    </div>
+                    <span style="font-size: 15px; position: relative; top: -23px;">주문하기</span>
+                </a>
+
+                <a href="cart.html">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon"><img src="/images/cart.png" alt="장바구니" width="40px" height="40px"></span>
+                    </div>
+                    <span>장바구니</span>
+                </a>
+
+                <a href="account.html">
+                    <div class="tab-icon-wrapper">
+                        <span class="tab-icon"><img src="/images/mypage.png" alt="계정관리" width="40px" height="40px"></span>
+                    </div>
+                    <span>계정관리</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+    <script src="/js/main.js"></script>
+    </body>
+</th:block>
+</html>

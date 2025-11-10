@@ -1,35 +1,13 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font Awesome CDN (아이콘 사용을 위해) --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <title>JavaBean - 지난 주문 내역</title>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><title>JavaBean - 지난 주문 내역</title>
     <link rel="stylesheet" href="/css/order_history.css">
 </head>
-<body>
+<th:block th:replace="~{./include/userBaseLayout :: setContent( ~{:: .wrap} ) }">
 
-    <div class="mobile-frame">
-
-        <div class="fixed-top">
-            <header class="top-bar">
-                <div class="logo-section">
-                    <span class="logo-icon">☕</span>
-                    <span class="logo-text">JavaBean</span>
-                </div>
-                <span class="notification-icon" id="notification-trigger">
-                    <i class="fa-solid fa-bell" style="color: #5A3E2B;"></i>
-                    <div class="notification-popup" id="notification-popup">
-                        <div class="popup-arrow"></div> <p>주문내역이 없습니다.</p>
-                    </div>
-                </span>
-            </header>
-        </div> 
-
+    <div class="wrap">
         <main class="container">
-            
             <h2 class="order-history-header">지난 주문 내역</h2>
-
             <div class="order-list-container">
                 <div class="order-item">
                     <div class="order-item-image">
@@ -93,47 +71,10 @@
                         <span class="detail-label">가격</span><span class="detail-value">3,000원</span>
                         <span class="detail-label">수량</span><span class="detail-value">1개</span>
                     </div>
-                    <!-- 마지막 아이템에는 구분선 없음 --></div>
-
+                </div>
             </div>
-
-        </main> 
-
-        <div class="fixed-bottom">
-            <nav class="tab-bar">
-                <a href="main">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">🏠</span>
-                    </div>
-                    <span>홈</span>
-                </a>
-                <a href="order_history">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">📝</span>
-                    </div>
-                    <span>주문내역</span>
-                </a>
-                <a href="#" class="active">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">☕</span>
-                    </div>
-                    <span>주문하기</span>
-                </a>
-                <a href="#">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">🛍️</span>
-                    </div>
-                    <span>장바구니</span>
-                </a>
-                <a href="#">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon">👤</span>
-                    </div>
-                    <span>계정관리</span>
-                </a>
-            </nav>
-        </div> 
-    </div> 
-</body>
+        </main>
+    </div>
 <script src="/js/main.js"></script>
+</th:block>
 </html>

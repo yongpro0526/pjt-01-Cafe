@@ -1,19 +1,20 @@
 # JavaBean 모바일 카페 앱 (메인 화면)
 
-### 이 프로젝트는 'JavaBean'이라는 가상의 커피숍을 위한 모바일 앱의 메인 화면(홈)을 구현한 단일 HTML 파일입니다. 모바일 우선 디자인을 적용하여 실제 앱과 유사한 UI/UX를 시뮬레이션하는 것을 목표로 합니다.
+## 레이아웃 구조 (Thymeleaf Fragment 활용)
 
-##### 📌 주요 기능
+이 프로젝트는 Thymeleaf의 Fragment 기능을 사용하여 `userBaseLayout.html` 파일을 기반으로 공통 레이아웃(상단바, 하단 탭바 등)을 적용했습니다!
 
-모바일 프레임: 실제 스마트폰(375x812px) 크기의 프레임 안에서 화면이 동작합니다.
+### Fragment 적용 방법
 
-고정 상단 바: 앱 이름('JavaBean')과 Font Awesome을 사용한 알림 아이콘이 포함된 상단 바가 고정되어 있습니다.
+모든 메인 페이지(로그인,회원가입,관리자페이지 제외)는 반드시 `th:replace` 구문을 사용하여 `userBaseLayout.html`의 `setContent` Fragment를 호출해주세요!!
 
-메인 배너: 상단에 위치한 프로모션 배너 영역입니다. (현재 플레이스홀더 이미지 사용)
+```html
+<html lang="ko" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)">
+<th:block th:replace="~{./include/userBaseLayout :: setContent( ~{:: .wrap} ) }">
+    <div class="wrap">
+        </div>
+</th:block>
+</html>
+```
 
-이전 주문내역: 가로 스크롤이 가능한 '이전 주문내역' 목록을 표시합니다.
-
-리워드 섹션: 사용자의 스탬프와 쿠폰 현황을 보여줍니다.
-
-고정 하단 탭 바: 화면 하단에 5개의 탭(홈, 주문내역, 주문하기, 장바구니, 계정관리)이 고정되어 있습니다.
-
-'주문하기' 탭 강조: 현재 활성화된 탭('주문하기')은 다른 탭과 달리 아이콘이 원형 배경과 함께 위로 돌출되는 독특한 CSS 효과가 적용되어 있습니다.
+메인컨텐츠는 꼭 .wrap 안에 작성 부탁드립니다..!!

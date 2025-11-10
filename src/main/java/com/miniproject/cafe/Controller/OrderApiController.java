@@ -23,8 +23,7 @@ public class OrderApiController {
     public ResponseEntity<OrderVO> createOrder(@RequestBody OrderVO order) {
         try {
             OrderVO createdOrder = orderService.createOrder(order);
-            // 성공 응답 (HTTP 200 OK)
-            return ResponseEntity.ok(createdOrder);
+            return ResponseEntity.status(200).body(createdOrder); // 성공 응답 (HTTP 200 OK)
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(null);
@@ -51,7 +50,7 @@ public class OrderApiController {
         }
 
         try {
-            // [수정] 서비스 호출 시 파라미터 순서 변경
+            // 서비스 호출
             orderService.updateOrderStatus(newStatus, orderId);
             return ResponseEntity.ok().build(); // 200 OK
 
