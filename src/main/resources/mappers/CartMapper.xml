@@ -14,6 +14,38 @@
     </insert>
 
     <!-- 장바구니 조회 -->
+    <select id="getCartList" parameterType="String" resultType="map">
+        SELECT
+            C.CART_ID,
+            C.MEMBER_ID,
+            C.TOTAL_PRICE,
+            CI.CART_ITEM_ID,
+            CI.QUANTITY,
+            MO.OPTION_ID,
+            MO.TEMP,
+            MO.SHOT_COUNT,
+            MO.TUMBLER_USE,
+            MO.ADD_PEARL,
+            M.MENU_ID,
+            M.MENU_NAME,
+            M.MENU_PRICE,
+            M.MENU_IMG
+        FROM CART C
+            LEFT JOIN CART_ITEM CI ON C.CART_ID = CI.CART_ID
+            LEFT JOIN MENU_OPTION MO ON CI.MENU_OPTION_ID = MO.OPTION_ID
+            LEFT JOIN MENU M ON MO.MENU_ID = M.MENU_ID
+        WHERE c.MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 장바구니에 담기 -->
+    <select id="addCartItem" parameterType="CartItemVO">
+        INSERT INTO CART_ITEM (CART_ID,
+                               MENU_OPTION_ID,
+                               QUANTITY)
+        VALUES (#{cartId},
+                #{manuOptionId},
+                #{quantity})
+    </select>
 
 
 

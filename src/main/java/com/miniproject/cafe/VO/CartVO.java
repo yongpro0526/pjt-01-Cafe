@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CartVO {
     private long cartId; // 카트 ID (PK)
-    private int memberId; // 유저 ID (FK, UK)
+    private String memberId; // 유저 ID (FK, UK)
     private int totalPrice; // 장바구니 총 가격
 }
