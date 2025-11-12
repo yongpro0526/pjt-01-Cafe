@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head><title>JavaBean - 나의 픽</title>
-    <link rel="stylesheet" href="/css/mypick.css">
-</head>
 <th:block th:replace="~{./include/userBaseLayout :: setContent( ~{:: .wrap} ) }">
 
     <div class="wrap">
-        <main class="main-content">
-          <div style="padding: 20px;" class="title">
-            <h2 style="font-weight: bold; color: #333; margin-bottom: 10px;" class="title-content">나만의 원픽</h2>
-          </div>
+        <head>
+            <title>JavaBean - 나의 픽</title>
+            <link rel="stylesheet" href="/css/mypick.css">
+        </head>
 
-          <div class="menu-list-container" id="myPickList">
-            <!-- 자바스크립트로 메뉴가 채워짐 -->
-          </div>
+        <main class="main-content">
+            <div style="padding: 20px;" class="title">
+                <h2 style="font-weight: bold; color: #333; margin-bottom: 10px;" class="title-content">나만의 원픽</h2>
+            </div>
+
+            <div class="menu-list-container" id="myPickList">
+            </div>
         </main>
+        <script src="/js/mypick.js"></script>
     </div>
 </th:block>
-<script src="/js/mypick.js"></script>
 </html>

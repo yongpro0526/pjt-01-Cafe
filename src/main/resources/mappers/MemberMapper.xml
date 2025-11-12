@@ -4,24 +4,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.miniproject.cafe.Mapper.MemberMapper">
-    <insert id="MemberRegister" parameterType="MemberVO">
-        INSERT INTO MEMBER(
-           ID,
-           PASSWORD,
-           USERNAME,
-           EMAIL
+
+    <insert id="registerMember" parameterType="MemberVO">
+        INSERT INTO member(
+        ID,
+        PASSWORD,
+        USERNAME,
+        EMAIL
         ) VALUES (
-           #{id},
-           #{password},
-           #{username},
-           #{email}
-       )
+        #{id},
+        #{password},
+        #{username},
+        #{email}
+        )
     </insert>
 
-    <select id="MemberLogin" resultType="MemberVO">
+    <select id="loginMember" parameterType="MemberVO" resultType="MemberVO">
         SELECT *
         FROM MEMBER
-        WHERE ID = #{id}
+        WHERE ID = #{id} AND PASSWORD = #{password}
     </select>
 
     <select id="isEmailDuplicate" parameterType="String" resultType="boolean">

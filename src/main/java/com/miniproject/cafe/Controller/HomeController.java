@@ -18,7 +18,7 @@ public class HomeController {
         return "order_history";
     }
 
-    @GetMapping("coffee")
+    @GetMapping("/coffee")
     public String food() {
         return "redirect:/menu/coffee";
     }
@@ -27,6 +27,4 @@ public class HomeController {
     public String myPickPage() {
         return "mypick";
     }
-
-
 }
