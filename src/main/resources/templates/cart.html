@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Java Coffee</title>
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+</head>
+<th:block th:replace="~{./include/userBaseLayout :: setContent( ~{:: .wrap} ) }">
+    <div class="wrap">
+        <div class="app-container">
+            <main class="shopping-cart-combined">
+                <h1 class="screen-1-title">장바구니</h1>
+                <div class="action-bar screen-1-content">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="selectAll" checked>
+                        전체선택
+                        <span class="checkmark"></span>
+                    </label>
+                    <button class="delete-btn" id="deleteSelectedBtn">선택삭제</button>
+                </div>
+                <div class="item-list screen-1-content">
+                    <div class="cart-item" data-price="3000">
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="item-checkbox-input" checked>
+                            <span class="checkmark item-checkbox"></span>
+                        </label>
+                        <img src="/images/image2.png" alt="ICE 아메리카노" class="item-img">
+                        <div class="item-details">
+                            <span class="item-temp">ICE</span>
+                            <span class="item-name">아메리카노</span>
+                            <span class="item-price-display">9,000원</span>
+                        </div>
+                        <div class="item-controls">
+                            <button class="control-btn minus-btn">-</button>
+                            <span class="item-quantity" data-quantity="3">3</span>
+                            <button class="control-btn plus-btn">+</button>
+                        </div>
+                        <button class="item-remove">×</button>
+                    </div>
+
+                    <div class="cart-item" data-price="3600">
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="item-checkbox-input" checked>
+                            <span class="checkmark item-checkbox"></span>
+                        </label>
+                        <img src="/images/image2.png" alt="ICE 아메리카노 (옵션)" class="item-img">
+                        <div class="item-details">
+                            <span class="item-temp">ICE</span>
+                            <span class="item-name">아메리카노</span>
+                            <span class="item-price-display">3,600원</span>
+                            <p class="item-options">텀블러 사용 | 샷 추가(+600원)</p>
+                        </div>
+                        <div class="item-controls">
+                            <button class="control-btn minus-btn">-</button>
+                            <span class="item-quantity" data-quantity="1">1</span>
+                            <button class="control-btn plus-btn">+</button>
+                        </div>
+                        <button class="item-remove">×</button>
+                    </div>
+
+                    <div class="cart-item" data-price="3000">
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="item-checkbox-input" checked>
+                            <span class="checkmark item-checkbox"></span>
+                        </label>
+                        <img src="/images/image2.png" alt="HOT 아메리카노" class="item-img">
+                        <div class="item-details">
+                            <span class="item-temp hot">HOT</span>
+                            <span class="item-name">아메리카노</span>
+                            <span class="item-price-display">3,000원</span>
+                        </div>
+                        <div class="item-controls">
+                            <button class="control-btn minus-btn">-</button>
+                            <span class="item-quantity" data-quantity="1">1</span>
+                            <button class="control-btn plus-btn">+</button>
+                        </div>
+                        <button class="item-remove">×</button>
+                    </div>
+
+                    <div class="cart-item" data-price="3000">
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="item-checkbox-input" checked>
+                            <span class="checkmark item-checkbox"></span>
+                        </label>
+                        <img src="/images/cafelatte.png" alt="ICE 카페라떼" class="item-img">
+                        <div class="item-details">
+                            <span class="item-temp">ICE</span>
+                            <span class="item-name">카페라떼</span>
+                            <span class="item-price-display">3,000원</span>
+                        </div>
+                        <div class="item-controls">
+                            <button class="control-btn minus-btn">-</button>
+                            <span class="item-quantity" data-quantity="1">1</span>
+                            <button class="control-btn plus-btn">+</button>
+                        </div>
+                        <button class="item-remove">×</button>
+                    </div>
+
+                    <div class="total-price-bar">
+                        <span class="total-label">메뉴 가격</span>
+                        <span class="total-amount" id="totalCartPrice">18,600원</span>
+                    </div>
+                </div>
+
+                <div class="order-details">
+                    <div class="delivery-toggle">
+                        <button class="delivery-btn active-delivery" data-type="delivery">배달</button>
+                        <button class="delivery-btn" data-type="packaging">포장</button>
+                    </div>
+
+                    <div class="section-container request-section">
+                        <div class="section-title">요청사항</div>
+                        <div class="request-options">
+                            <div class="col">
+                                <label class="checkbox-container small">
+                                    <input type="checkbox" class="request-option-checkbox"> 빨대 빼주세요.
+                                    <span class="checkmark item-checkbox square"></span>
+                                </label>
+                                <label class="checkbox-container small">
+                                    <input type="checkbox" class="request-option-checkbox"> 얼음 적게 넣어주세요.
+                                    <span class="checkmark item-checkbox square"></span>
+                                </label>
+                                <label class="checkbox-container small">
+                                    <input type="checkbox" class="request-option-checkbox" id="directInputCheck"> 직접입력
+                                    <span class="checkmark item-checkbox square"></span>
+                                </label>
+                            </div>
+                            <div class="col">
+                                <label class="checkbox-container small">
+                                    <input type="checkbox" class="request-option-checkbox"> 봉투에 담아갈게요
+                                    <span class="checkmark item-checkbox square"></span>
+                                </label>
+                                <label class="checkbox-container small">
+                                    <input type="checkbox" class="request-option-checkbox"> 캐리어에 담아갈게요.
+                                    <span class="checkmark item-checkbox square"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <textarea id="requestInput" placeholder="직접입력 선택 시 상세 내용을 적어주세요." rows="4"></textarea>
+                    </div>
+
+                    <div class="section-container payment-section">
+                        <div class="section-title">결제수단</div>
+                        <div class="payment-options">
+                            <label class="checkbox-container radio-style">
+                                <input type="radio" name="paymentMethod" value="simple" checked> 간편 결제
+                                <span class="checkmark item-checkbox square"></span>
+                            </label>
+                            <label class="checkbox-container radio-style">
+                                <input type="radio" name="paymentMethod" value="cash"> 만나서 직접 결제
+                                <span class="checkmark item-checkbox square"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="final-summary">
+                        <div class="summary-line">
+                            <span class="label">상품 금액</span>
+                            <span class="value" id="productPrice">18,600원</span>
+                        </div>
+                        <div class="summary-line">
+                            <span class="label">배달비</span>
+                            <span class="value" id="deliveryFee">2,000원</span>
+                        </div>
+                        <div class="summary-line final-total">
+                            <span class="label total-label">총 가격</span>
+                            <span class="value total-amount" id="finalTotalPrice">20,600원</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <script th:src="@{/js/cart.js}"></script>
+    </div>
+</th:block>
+</html>

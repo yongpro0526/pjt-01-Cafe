@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<title>JavaBean - 메뉴 커피 창</title>
+<link rel="stylesheet" href="/css/menu.css">
+<th:block th:replace="~{./include/userBaseLayout :: setContent( ~{:: .wrap} ) }">
+
+    <div class="wrap">
+
+        <nav class="category-tab-bar">
+            <a href="newMenu">신메뉴</a>
+            <a href="coffee" class="active-category">커피</a>
+            <a href="beverage">음료</a>
+            <a href="tea">티/에이드</a>
+            <a href="food" >푸드</a>
+        </nav>
+
+        <main class="main-content">
+            <div class="menu-list-container">
+
+                <!-- 메뉴 -->
+                <div class="menu-item"
+                     th:each="item : ${menuItems}"
+                     th:attr="data-menu-id=${item.menuId}"
+                     onclick="selectMenu(this)">
+
+                    <!-- 이미지 경로 -->
+                    <img th:src="@{'/images/img/' + ${item.menuImg}}"
+                         th:alt="${item.menuName}"
+                         class="menu-image">
+
+                    <!-- 메뉴 상세 정보 -->
+                    <div class="menu-details">
+                        <div class="menu-name" th:text="${item.menuName}">메뉴 이름</div>
+                        <span class="menu-temp">ICE</span>
+                        <span class="menu-temp hot" th:if="${item.hotAvailable}">HOT</span>
+                        <div class="menu-price"
+                             th:data-price="${item.menuPrice}"
+                             th:text="${#numbers.formatInteger(item.menuPrice, 0)} + '원'">0000원</div>
+                    </div>
+
+                    <span class="like-button" onclick="toggleLike(this, event)">♡</span>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</th:block>
+<script src="/js/menu.js"></script>
+</html>

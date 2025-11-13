@@ -1,0 +1,515 @@
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* App Container (스마트폰 화면 크기 시뮬레이션) */
+.app-container {
+    width: 100%;
+    max-width: 450px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* 상단 헤더 (고정) */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    height: 70px;
+    border-bottom: 2px dotted #eee;
+    position: sticky; 
+    top: 0;
+    background-color: #fff;
+    z-index: 10;
+}
+
+.app-header .logo {
+    height: 40px; 
+    display: flex;
+    align-items: center;
+}
+
+.app-header .logo.left img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #795548;
+}
+
+.app-header .logo.center img {
+    height: 30px;
+    width: auto;
+}
+
+.app-header .icon.right .material-icons {
+    font-size: 28px;
+    color: #444;
+}
+
+/* 메인 콘텐츠 영역 (스크롤 가능) */
+.shopping-cart-combined {
+    padding: 20px;
+    padding-bottom: 100px; /* 푸터 공간 확보 */
+    flex-grow: 1;
+}
+
+/* Screen 1 Title (장바구니) */
+.screen-1-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Action Bar (Select All / Delete Selected) */
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Custom Checkbox Styling */
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 25px;
+    cursor: pointer;
+    user-select: none;
+    line-height: 20px;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 모든 체크/라디오 버튼이 선택되었을 때의 스타일 */
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #fff; /* 흰색 배경 유지 (채우기 방지) */
+    border-color: #795548; /* 테마색 (갈색) 테두리 적용 */
+}
+
+.item-checkbox {
+    border-radius: 50%; /* 원형 유지 */
+    border: 1px solid #ccc;
+}
+
+/* 장바구니 품목 (원형) 체크박스: 흰색 배경과 갈색 테두리 적용 */
+.checkbox-container input:checked ~ .item-checkbox {
+    background-color: #fff; 
+    border-color: #795548; 
+}
+
+/* Square checkbox for Screen 2 requests/payment */
+.checkmark.square {
+    border-radius: 4px;
+}
+
+/* 모든 체크/라디오 버튼에 갈색 체크 표시 추가 (통합) */
+.checkbox-container input:checked ~ .checkmark:after {
+    content: '✓';
+    position: absolute;
+    color: #795548; /* 갈색 체크 표시 */
+    font-size: 14px;
+    font-weight: bold; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Cart Item Styling */
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+}
+
+.cart-item .checkbox-container {
+    padding-left: 35px;
+    margin-right: -15px;
+}
+
+/* item-img 크기 고정 */
+.item-img {
+    width: 60px;
+    height: 80px;
+    object-fit: contain;
+    margin-right: 15px;
+    border-radius: 8px;
+}
+
+.item-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding-right: 10px;
+}
+
+.item-temp {
+    font-size: 12px;
+    color: #4a90e2;
+    font-weight: bold;
+}
+
+.item-temp.hot {
+    color: #d0021b;
+}
+
+.item-name {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.item-price-display {
+    font-size: 14px;
+    color: #333;
+    margin-top: 2px;
+    font-weight: bold;
+}
+
+.item-options {
+    font-size: 11px;
+    color: #888;
+    margin-top: 5px;
+    line-height: 1.2;
+}
+
+/* Item Quantity Controls */
+.item-controls {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    overflow: hidden;
+    height: 30px;
+    flex-shrink: 0;
+}
+
+/* 🌟 control-btn 기본 스타일 (통일) 🌟 */
+.control-btn {
+    background-color: transparent; 
+    border: none;
+    color: #795548; /* 글자색을 테마색으로 통일 */
+    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background-color 0.1s;
+}
+
+/* 🌟 눌렸을 때(Active) 또는 호버 시(Hover) 효과 (통일) 🌟 */
+.control-btn:active,
+.control-btn:hover {
+    background-color: #f7f3f1; 
+}
+
+/* (+) 버튼 스타일: 개별 스타일 제거 (control-btn 공통 스타일 적용) */
+.control-btn.plus-btn {
+    /* 개별 스타일 없음 */
+}
+
+/* (-) 버튼 스타일: 개별 스타일 제거 (control-btn 공통 스타일 적용) */
+.control-btn.minus-btn {
+    color: #795548; /* control-btn과 동일하게 통일 */
+}
+
+
+/* 수량 표시 영역 */
+.item-quantity {
+    padding: 0 5px;
+    font-size: 14px;
+    min-width: 20px;
+    text-align: center;
+    border-left: 1px solid #ddd; 
+    border-right: 1px solid #ddd;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+}
+
+/* Item Remove (item-remove 수정) */
+.item-remove {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    background: none;
+    border: none;
+    color: #a0a0a0;
+    font-size: 18px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 5px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Total Price Bar (장바구니 목록 하단 총 가격) */
+.total-price-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 0 20px 0;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 주문 상세 영역 (스크롤로 이어지는 부분) */
+/* ---------------------------------------------------------------------- */
+
+.order-details {
+    padding-top: 20px; 
+    border-top: 8px solid #f5f5f5; 
+    margin: 0 -20px; 
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #fff; 
+}
+
+/* Top Total Price Summary (스크롤 후 보이는 총 가격) */
+.summary-total-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Delivery/Packaging Toggle */
+.delivery-toggle {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.delivery-btn {
+    flex: 1;
+    padding: 15px 10px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #795548;
+    background-color: #f7f3f1;
+}
+
+.delivery-btn.active-delivery {
+    background-color: #795548;
+    color: #fff;
+}
+
+/* Section Titles (요청사항, 결제수단) */
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.section-container {
+    margin-bottom: 30px;
+}
+
+/* Request Options Layout (Two Columns) */
+.request-options {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.request-options .col {
+    flex-basis: 48%;
+    display: flex;
+    flex-direction: column;
+}
+
+.request-options .checkbox-container {
+    margin-bottom: 15px;
+    padding-left: 30px;
+}
+
+.request-section textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    resize: none;
+    font-size: 14px;
+    min-height: 100px;
+    margin-top: 10px;
+}
+
+.payment-options {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.payment-options .checkbox-container {
+    flex-basis: 48%;
+    padding-left: 30px;
+}
+
+/* Final Price Breakdown */
+.final-summary {
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.summary-line .value {
+    font-weight: 500;
+}
+
+.summary-line.final-total {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* 하단 내비게이션 (고정) */
+.app-footer {
+    width: 100%;
+    position: sticky; 
+    bottom: 0;
+    max-width: 450px;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+    z-index: 10;
+}
+
+.nav-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #888;
+    font-size: 10px;
+    text-align: center;
+    flex: 1;
+}
+
+.nav-item span.material-icons {
+    font-size: 24px;
+    margin-bottom: 2px;
+    line-height: 1;
+}
+
+/* 하단 내비게이션 활성화 색상: 갈색 테마색 적용 */
+.nav-item.active {
+    color: #795548; 
+}
+
+.order-button {
+    background-color: #f7f3f1;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2px;
+    position: relative;
+    top: -10px;
+    border: 5px solid #fff;
+}
+
+.order-button .material-icons {
+    color: #795548;
+    font-size: 28px !important;
+}
+
+.nav-item.active .order-button ~ span {
+    color: #795548;
+    font-weight: bold;
+}
+
+/* 모바일 뷰 최적화 */
+@media (max-width: 450px) {
+    .app-container {
+        box-shadow: none;
+        min-height: 100vh;
+    }
+}
