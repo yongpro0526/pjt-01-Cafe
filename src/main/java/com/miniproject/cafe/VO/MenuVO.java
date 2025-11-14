@@ -10,5 +10,6 @@ public class MenuVO {
     private String salesStatus;
     private String menuImg;
     private String menuPrice;
-    private boolean hotAvailable ;
+    private int hotAvailable ;
+    private String menuDefinition;
 }

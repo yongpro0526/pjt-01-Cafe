@@ -18,29 +18,36 @@
             <div class="menu-list-container">
 
                 <!-- 메뉴 -->
-                <div class="menu-item"
-                     th:each="item : ${menuItems}"
-                     th:attr="data-menu-id=${item.menuId}"
-                     onclick="selectMenu(this)">
+                <a th:each="item : ${menuItems}"
+                   th:href="@{/home/order_detail(id=${item.menuId})}"
+                   class="menu-link">
 
-                    <!-- 이미지 경로 -->
-                    <img th:src="@{'/images/img/' + ${item.menuImg}}"
-                         th:alt="${item.menuName}"
-                         class="menu-image">
+                    <div class="menu-item">
 
-                    <!-- 메뉴 상세 정보 -->
-                    <div class="menu-details">
-                        <div class="menu-name" th:text="${item.menuName}">메뉴 이름</div>
+                        <!-- 이미지 -->
+                        <img th:src="@{'/images/img/' + ${item.menuImg}}"
+                             th:alt="${item.menuName}"
+                             class="menu-image">
+
+                        <!-- 메뉴 상세 -->
+                        <div class="menu-details">
+                            <div class="menu-name" th:text="${item.menuName}"></div>
+
                             <span class="menu-temp">ICE</span>
-                            <span class="menu-temp hot" th:if="${item.hotAvailable}">HOT</span>
-                        <div class="menu-price"
-                             th:data-price="${item.menuPrice}"
-                             th:text="${#numbers.formatInteger(item.menuPrice, 0)} + '원'">0000원</div>
+                            <span class="menu-temp hot"
+                                  th:if="${item.category == '커피' or #strings.contains(item.menuName, '라떼')}">
+                                HOT
+                            </span>
+
+                            <div class="menu-price"
+                                 th:data-price="${item.menuPrice}"
+                                 th:text="${#numbers.formatInteger(item.menuPrice, 0)} + '원'"></div>
+                        </div>
+
+                        <span class="like-button" onclick="toggleLike(this, event)">♡</span>
                     </div>
 
-                    <span class="like-button" onclick="toggleLike(this, event)">♡</span>
-                </div>
-
+                </a>
             </div>
         </main>
     </div>

@@ -31,13 +31,21 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(
-                                "/login","/js/**",
-                                "/css/**", "/images/**", "/.well-known/**",
-                                "/api/member/**","/home/**", "/menu/**",
-                                "/account/**","/admin/signup", "/admin/login"
-                        ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/", "/login", "/js/**", "/css/**", "/images/**", "/.well-known/**").permitAll()
+
+                        // ⭐ 홈 화면 전체 접근 허용
+                        .requestMatchers("/home/**").permitAll()
+
+                        // ⭐ 메뉴 화면 전체 접근 허용
+                        .requestMatchers("/menu/**").permitAll()
+
+                        // ⭐ 회원가입/로그인 API 접근 허용
+                        .requestMatchers("/api/member/**").permitAll()
+
+                        // 관리자 페이지
+                        .requestMatchers("/admin/**").permitAll()
+
+                        // 그 외는 인증 필요
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
