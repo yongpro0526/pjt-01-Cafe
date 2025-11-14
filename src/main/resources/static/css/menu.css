@@ -238,3 +238,12 @@
         cursor: pointer;
         margin-left: 10px;
     }
+
+    .menu-link {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+
+    .menu-link * {
+        text-decoration: none !important;
+    }

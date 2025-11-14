@@ -54,8 +54,9 @@ function toggleLike(element, event) {
     localStorage.setItem(LIKE_KEY, JSON.stringify(likedMenus));
 }
 
-// 메뉴 클릭 이벤트
-function selectMenu(menuItemElement) {
-    const menuName = menuItemElement.querySelector(".menu-name").textContent.trim();
-    console.log(menuName + ' 선택됨');
-}
+    // 메뉴 클릭 이벤트
+    function selectMenu(menuItemElement) {
+        const menuId = menuItemElement.getAttribute("data-menu-id");
+        // 메뉴 상세 페이지로 이동
+        window.location.href = `/home/order_detail`;
+    }

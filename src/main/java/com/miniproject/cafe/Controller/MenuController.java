@@ -60,6 +60,7 @@ public class MenuController {
     public String mypick() {
         return "redirect:/home/mypick";
     }
+    
 
 
 
