@@ -16,50 +16,37 @@
             <a th:href="@{/menu/food}" class="active-category">푸드</a>
         </nav>
 
-        <!-- 메뉴 목록 -->
+        <!-- 메뉴 리스트 -->
         <main class="main-content">
             <div class="menu-list-container">
 
                 <a th:each="item : ${menuItems}"
                    th:href="@{/home/order_detail(id=${item.menuId})}"
                    class="menu-link">
-
                     <div class="menu-item">
-
-                        <!-- 이미지 -->
+                        <!-- 메뉴 이미지 -->
                         <img th:src="@{'/images/img/' + ${item.menuImg}}"
                              th:alt="${item.menuName}"
                              class="menu-image">
-
-                        <!-- 메뉴 상세 -->
+                        <!-- 메뉴 정보 -->
                         <div class="menu-details">
-
                             <div class="menu-name" th:text="${item.menuName}"></div>
-
-                            <!-- ICE 기본 표시 -->
-                            <span class="menu-temp">ICE</span>
-
-                            <!-- HOT 표시 (있으면 표시, 음식이면 대부분 0일 것) -->
-                            <span class="menu-temp hot"
-                                  th:if="${item.hotAvailable == 1}">
-                                HOT
-                            </span>
-
+                            <!-- 가격 -->
                             <div class="menu-price"
                                  th:text="${#numbers.formatInteger(item.menuPrice, 0)} + '원'">
                             </div>
                         </div>
 
                         <span class="like-button" onclick="toggleLike(this, event)">♡</span>
-
                     </div>
+
                 </a>
 
             </div>
         </main>
-
     </div>
 
 </th:block>
+
 <script src="/js/menu.js"></script>
 </html>

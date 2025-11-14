@@ -232,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (e) => {
             if (!IS_LOGGED_IN) {
                 e.preventDefault(); // 페이지 이동 방지
-                alert('로그인이 필요한 서비스입니다.');
                 if (loginModalOverlay) {
                     loginModalOverlay.classList.add('show'); // 로그인 모달 열기
                 }

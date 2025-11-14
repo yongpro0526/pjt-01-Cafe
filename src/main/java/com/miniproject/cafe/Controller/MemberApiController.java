@@ -3,6 +3,7 @@ package com.miniproject.cafe.Controller;
 
 import com.miniproject.cafe.Service.MemberService;
 import com.miniproject.cafe.VO.MemberVO;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -83,13 +84,29 @@ public class MemberApiController {
     }
     /* 로그인 로직 */
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> handleLogin(@RequestBody MemberVO vo, HttpSession session) {
-        boolean loginSuccess = memberService.loginMember(vo, session);
+    public ResponseEntity<?> login(@RequestBody Map<String, Object> data,
+                                   HttpServletResponse response,
+                                   HttpSession session) {
 
-        if (loginSuccess) {
-            return ResponseEntity.ok(Map.of("message", "로그인 성공!"));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "아이디 또는 비밀번호가 일치하지 않습니다."));
+        String email = (String) data.get("email");
+        String password = (String) data.get("password");
+        String rememberMe = (String) data.get("remember-me"); // 체크박스 값
+
+        MemberVO member = memberService.login(email, password);
+
+        if (member == null) {
+            return ResponseEntity.status(400)
+                    .body(Map.of("message", "이메일 또는 비밀번호가 맞지 않습니다."));
         }
+
+        // ⭐ 기본 로그인 성공 → 세션 저장
+        session.setAttribute("loginMember", member);
+
+        // ⭐ 자동로그인 체크 시 → 쿠키 + DB 토큰 저장
+        if ("on".equals(rememberMe)) {
+            memberService.saveRememberMeToken(member.getId(), response);
+        }
+
+        return ResponseEntity.ok(Map.of("message", "로그인 성공"));
     }
 }

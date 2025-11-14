@@ -1,19 +1,41 @@
 package com.miniproject.cafe.Mapper;
 
 import com.miniproject.cafe.VO.MemberVO;
-import jakarta.servlet.http.HttpSession;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Mapper
 public interface MemberMapper {
-    void registerMember(MemberVO vo); //성공 시 "SUCCESS", 아이디 중복 시 "ID_DUPLICATE", 이메일 중복 시 "EMAIL_DUPLICATE"
-    MemberVO loginMember(MemberVO vo); //ID와 Password가 일치하는 회원을 조회
-    boolean isIdDuplicate(String id); //id 중복확인 용도
-    boolean isEmailDuplicate(String email); //이메일 중복확인 용도
-    Optional<MemberVO> findByEmail(@Param("email") String email); //이메일과 로그인 방식(카카오톡,네이버 등)
-    void insertOAuthMember(MemberVO vo); //OAuth 사용자를 위한 회원가입
-    void updateUser(MemberVO vo); //사용자 정보 업데이트
+
+    // 일반 회원가입
+    void registerMember(MemberVO vo);
+
+    // 일반 로그인
+    MemberVO loginMember(MemberVO vo);
+
+    // 중복 검사
+    boolean isIdDuplicate(String id);
+    boolean isEmailDuplicate(String email);
+
+    // 이메일로 회원 조회 (sns 포함)
+    MemberVO findByEmail(String email);
+
+    // OAuth(네이버/카카오/구글) 신규 회원 등록
+    void insertOAuthMember(MemberVO vo);
+
+    // 사용자 정보 업데이트 (이름 변경 등)
+    void updateUser(MemberVO vo);
+
+    // 자동로그인 토큰 저장
+    void saveRememberMeToken(@Param("memberId") String memberId,
+                             @Param("token") String token,
+                             @Param("expiry") LocalDateTime expiry);
+
+    // 자동로그인 토큰으로 회원 조회
+    MemberVO findByRememberMeToken(String token);
+
+    // 로그아웃 시 토큰 삭제
+    void clearRememberMeToken(String memberId);
 }
