@@ -24,20 +24,22 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         // Saved Request를 무시하는 SuccessHandler 객체 생성
-        SimpleUrlAuthenticationSuccessHandler successHandler = new SimpleUrlAuthenticationSuccessHandler();
+        SimpleUrlAuthenticationSuccessHandler successHandler =
+                new SimpleUrlAuthenticationSuccessHandler();
         successHandler.setAlwaysUseDefaultTargetUrl(true);
-        successHandler.setDefaultTargetUrl("/home/"); //로그인 성공시 항상 /home/으로 이동
+        successHandler.setDefaultTargetUrl("/home/");
 
-        http
-                .csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/login", "/js/**", "/css/**", "/images/**", "/.well-known/**").permitAll()
+                        .requestMatchers(
+                                "/login","/js/**",
+                                "/css/**", "/images/**", "/.well-known/**",
+                                "/api/member/**","/home/**", "/menu/**",
+                                "/account/**","/admin/signup", "/admin/login"
+                        ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
-                // --- 💻 일반 폼 로그인 설정 ---
-                // (일반 로그인은 "Saved Request"가 유용하므로 그대로 둡니다)
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/home/")
@@ -47,11 +49,9 @@ public class SecurityConfig {
                 // --- ✨ OAuth 2.0 (소셜 로그인) 설정 ---
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
-                        )
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(successHandler)
-                        .failureHandler(customOAuth2FailureHandler) // [ 3. 실패 핸들러 등록 ]
+                        .failureHandler(customOAuth2FailureHandler)
                 );
 
         return http.build();
