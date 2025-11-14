@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Bean - 메뉴 관리 (관리자)</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="menu_management.css"> 
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <img src="path/to/java_logo.png" alt="Java Logo" class="header-logo">
+            <h1>메뉴 관리</h1>
+        </header>
+
+        <main class="admin-main">
+            
+            <section class="menu-list-section">
+                <h2>등록된 메뉴</h2>
+                <div class="menu-actions">
+                    <button class="select-delete-btn">선택 메뉴 삭제</button>
+                </div>
+                <div class="table-scroll-container">
+                    <table class="menu-table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">선택</th>
+                                <th class="text-center">메뉴 이름</th>
+                                <th class="text-center">가격</th>
+                                <th class="text-center">카테고리</th>
+                                <th class="text-center">메뉴 삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-menu-id="1">
+                                <td><input type="checkbox"></td>
+                                <td>아메리카노</td>
+                                <td>3,000원</td>
+                                <td>커피</td>
+                                <td><button class="delete-btn">×</button></td>
+                            </tr>
+                            <tr data-menu-id="2">
+                                <td><input type="checkbox"></td>
+                                <td>디카페인 아메리카노</td>
+                                <td>3,000원</td>
+                                <td>커피</td>
+                                <td><button class="delete-btn">×</button></td>
+                            </tr>
+                            <tr data-menu-id="3">
+                                <td><input type="checkbox"></td>
+                                <td>카페라떼</td>
+                                <td>3,000원</td>
+                                <td>커피</td>
+                                <td><button class="delete-btn">×</button></td>
+                            </tr>
+                            <tr data-menu-id="4">
+                                <td><input type="checkbox"></td>
+                                <td>복숭아 아이스티</td>
+                                <td>3,000원</td>
+                                <td>논 커피</td>
+                                <td><button class="delete-btn">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <aside class="new-menu-section">
+                <h2>새 메뉴 등록</h2>
+                <form id="newMenuForm" class="new-menu-form">
+                    <label for="menuName">메뉴 이름</label>
+                    <input type="text" id="menuName" placeholder="예) 아메리카노" required>
+                    
+                    <label for="menuPrice">가격</label>
+                    <input type="text" id="menuPrice" placeholder="숫자만 입력해주세요. 예) 3000" required>
+                    
+                    <label for="menuCategory">카테고리</label>
+                    <select id="menuCategory">
+                        <option value="" disabled selected>카테고리 선택</option>
+                        <option value="coffee">커피</option>
+                        <option value="non_coffee">논 커피</option>
+                        <option value="ade_juice">에이드/주스</option>
+                        <option value="tea">티(Tea)</option>
+                        <option value="smoothie_frappe">스무디/프라페</option>
+                        <option value="dessert">디저트</option>
+                    </select>
+
+                    <label for="menuDescription">메뉴 설명</label>
+                    <textarea id="menuDescription"></textarea>
+                    
+                    <label>사진</label>
+                    <div class="image-upload-box">
+                        <span class="material-icons">add</span>
+                    </div>
+
+                    <button type="submit" class="submit-btn">메뉴 등록</button>
+                </form>
+            </aside>
+        </main>
+
+        <footer class="admin-footer">
+            <nav class="admin-nav">
+                <a href="#" class="nav-item active">메뉴 관리</a>
+                <a href="#" class="nav-item">주문 관리</a>
+                <a href="#" class="nav-item">매출 관리</a>
+                <a href="#" class="nav-item login-btn">로그인</a>
+            </nav>
+        </footer>
+    </div>
+    <script src="menu_management.js"></script>
+</body>
+</html>

@@ -40,6 +40,7 @@ public class CartController {
 
         model.addAttribute("cartItems", cartData.get("cartItems"));
         model.addAttribute("totalPrice", cartData.get("totalPrice"));
+        model.addAttribute("memberId", memberId);
 
         return "cart";
     }

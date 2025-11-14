@@ -39,14 +39,14 @@
     </select>
 
     <!-- 장바구니에 담기 -->
-    <select id="addCartItem" parameterType="CartItemVO">
+    <insert id="addCartItem" parameterType="CartItemVO">
         INSERT INTO CART_ITEM (CART_ID,
                                MENU_OPTION_ID,
                                QUANTITY)
         VALUES (#{cartId},
                 #{menuOptionId},
                 #{quantity})
-    </select>
+    </insert>
 
     <!-- 장바구니에서 개별삭제 -->
     <delete id="deleteCartItem">

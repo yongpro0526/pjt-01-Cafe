@@ -7,7 +7,7 @@
 <th:block th:replace="~{./include/userBaseLayout :: setContent( ~{:: .wrap} ) }">
     <div class="wrap">
         <div class="app-container">
-            <main class="shopping-cart-combined">
+            <main class="shopping-cart-combined" th:data-member-id="${memberId}">
                 <h1 class="screen-1-title">장바구니</h1>
                 <div class="action-bar screen-1-content">
                     <label class="checkbox-container">
