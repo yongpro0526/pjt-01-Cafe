@@ -376,7 +376,7 @@ a {
 .admin-nav {
     display: flex;
     justify-content: space-around;
-    height: 60px;
+    align-items: center;
 }
 
 .admin-nav .nav-item {
