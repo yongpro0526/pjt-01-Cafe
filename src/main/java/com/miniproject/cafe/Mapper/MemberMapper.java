@@ -2,11 +2,20 @@ package com.miniproject.cafe.Mapper;
 
 import com.miniproject.cafe.VO.MemberVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 
 @Mapper
 public interface MemberMapper {
-    int MemberRegister(MemberVO memberVO); //회원가입
-    MemberVO MemberLogin(MemberVO memberVO); //로그인
-    boolean isEmailDuplicate(String email); //이메일 중복확인
-    boolean isIdDuplicate(String uId); //아이디 중복확인
+
+    void registerMember(MemberVO vo);
+    boolean isIdDuplicate(String id);
+    boolean isEmailDuplicate(String email);
+
+    MemberVO findByEmail(String email);
+
+    void insertOAuthMember(MemberVO vo);
+
+    void updateUser(MemberVO vo);
 }

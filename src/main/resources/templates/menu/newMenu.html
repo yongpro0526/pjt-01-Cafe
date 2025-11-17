@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<title>JavaBean - 신메뉴</title>
+<link rel="stylesheet" href="/css/menu.css">
+<th:block th:replace="~{./include/userBaseLayout :: setContent(~{:: .wrap})}">
+
+    <div class="wrap">
+
+        <nav class="category-tab-bar">
+            <a th:href="@{/menu/newMenu}" class="active-category">신메뉴</a>
+            <a th:href="@{/menu/coffee}">커피</a>
+            <a th:href="@{/menu/beverage}">음료</a>
+            <a th:href="@{/menu/tea}">티/에이드</a>
+            <a th:href="@{/menu/food}">푸드</a>
+        </nav>
+
+        <main class="main-content">
+            <div class="menu-list-container">
+
+                <a th:each="item : ${menuItems}"
+                   th:href="@{/home/order_detail(id=${item.menuId})}"
+                   class="menu-link">
+
+                    <div class="menu-item">
+
+                        <img th:src="@{'/images/img/' + ${item.menuImg}}"
+                             th:alt="${item.menuName}"
+                             class="menu-image">
+
+                        <div class="menu-details">
+                            <div class="menu-name" th:text="${item.menuName}"></div>
+
+                            <span class="menu-temp">ICE</span>
+
+                            <span class="menu-temp hot"
+                                  th:if="${item.hotAvailable == 1}">
+                                HOT
+                            </span>
+
+                            <div class="menu-price"
+                                 th:text="${#numbers.formatInteger(item.menuPrice, 0)} + '원'">
+                            </div>
+                        </div>
+
+                        <span class="like-button" onclick="toggleLike(this, event)">♡</span>
+
+                    </div>
+                </a>
+            </div>
+        </main>
+
+    </div>
+
+</th:block>
+<script src="/js/menu.js"></script>
+</html>

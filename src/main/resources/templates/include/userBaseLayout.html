@@ -1,29 +1,40 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <th:block th:fragment="setContent(content)">
 
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-        <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link rel="stylesheet" th:href="@{/css/loginModal.css}">
+        <link rel="stylesheet" th:href="@{/css/main.css}">
     </head>
 
     <body>
+
     <div class="mobile-frame">
+
+        <!-- 상단 고정 헤더 -->
         <div class="fixed-top">
             <header class="top-bar">
                 <div class="logo-section">
                     <span class="logo-icon"><img src="/images/자바빈로고 2.png" alt=""></span>
                     <span class="logo-text"><img src="/images/자바빈로고 1.png" alt=""></span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <a href="#" style="text-decoration: none;">
-                        <img src="/images/heart.png" width="23px" height="23px" alt="찜" style="vertical-align: middle;">
+
+                <div class="header-icons"
+                     style="display:flex; align-items:center; gap:10px;">
+
+                    <!-- 로그인 필요 -->
+                    <a href="/home/mypick" class="login-required">
+                        <img src="/images/heart.png" width="23" height="23" alt="찜">
                     </a>
+
                     <span class="notification-icon" id="notification-trigger">
-                        <a href="#" style="text-decoration: none;"><img src="/images/알림.png" width="23px" height="23px" alt="알림"></a>
+                        <a href="#"><img src="/images/알림.png" width="23" height="23" alt="알림"></a>
                         <div class="notification-popup" id="notification-popup">
                             <div class="popup-arrow"></div>
                             <p>주문내역이 없습니다.</p>
@@ -33,48 +44,146 @@
             </header>
         </div>
 
+        <!-- 중간 컨텐츠 -->
         <th:block th:replace="${content}"></th:block>
 
+        <!-- 하단 탭바 -->
         <div class="fixed-bottom">
             <nav class="tab-bar">
-                <a href="main">
+
+                <a th:href="@{/home/}">
                     <div class="tab-icon-wrapper">
-                        <span class="tab-icon"><img src="/images/home.png" alt="홈" width="40px" height="40px"></span>
+                        <img src="/images/home.png" th:src="@{/images/home.png}" alt="홈" width="40" height="40">
                     </div>
                     <span>홈</span>
                 </a>
 
-                <a href="order_history">
+                <a th:href="@{/home/order_history}" class="login-required">
                     <div class="tab-icon-wrapper">
-                        <span class="tab-icon"><img src="/images/list.png" alt="주문내역" width="35px" height="35px"></span>
+                        <img src="/images/list.png" th:src="@{/images/list.png}" alt="주문내역" width="35" height="35">
                     </div>
                     <span>주문내역</span>
                 </a>
 
-                <a href="coffee.html" class="active">
+                <a th:href="@{/menu/coffee}" class="active login-required">
                     <div class="tab-icon-wrapper">
-                        <span class="tab-icon"><img src="/images/coffee.png" alt="주문하기" width="50px" height="50px"></span>
+                        <span class="tab-icon">
+                            <img src="/images/coffee.png" th:src="@{/images/coffee.png}" alt="주문하기" width="50" height="50">
+                        </span>
                     </div>
                     <span style="font-size: 15px; position: relative; top: -23px;">주문하기</span>
                 </a>
 
-                <a href="cart.html">
+                <a th:href="@{/home/cart}" class="login-required">
                     <div class="tab-icon-wrapper">
-                        <span class="tab-icon"><img src="/images/cart.png" alt="장바구니" width="40px" height="40px"></span>
+                        <img src="/images/cart.png" th:src="@{/images/cart.png}" alt="장바구니" width="40" height="40">
                     </div>
                     <span>장바구니</span>
                 </a>
 
-                <a href="account.html">
-                    <div class="tab-icon-wrapper">
-                        <span class="tab-icon"><img src="/images/mypage.png" alt="계정관리" width="40px" height="40px"></span>
-                    </div>
-                    <span>계정관리</span>
-                </a>
+                <!-- 🔥 로그인 했을 때 -->
+                <th:block sec:authorize="isAuthenticated()">
+                    <a th:href="@{/home/account}">
+                        <div class="tab-icon-wrapper">
+                            <img src="/images/mypage.png" th:src="@{/images/mypage.png}" alt="계정관리" width="40" height="40">
+                        </div>
+                        <span>계정관리</span>
+                    </a>
+                </th:block>
+
+                <!-- 🔥 로그인 안 했을 때 -->
+                <th:block sec:authorize="isAnonymous()">
+                    <a href="javascript:void(0)" id="login-modal-trigger">
+                        <div class="tab-icon-wrapper">
+                            <img src="/images/mypage.png" th:src="@{/images/mypage.png}" alt="로그인" width="40" height="40">
+                        </div>
+                        <span>로그인</span>
+                    </a>
+                </th:block>
+
             </nav>
         </div>
     </div>
+
+    <!-- 로그인 모달 -->
+    <div id="login-modal-overlay" class="login-modal-overlay">
+        <div class="login-modal-content">
+            <span id="login-modal-close" class="login-modal-close">&times;</span>
+
+            <div class="modal-logo">
+                <img src="/images/자바빈로고 1.png" th:src="@{/images/자바빈로고 1.png}" alt="JavaBean Logo">
+            </div>
+
+            <form id="modalLoginForm" method="post" th:action="@{/login}" class="login-form">
+                <input type="text" name="username" placeholder="이메일" required>
+                <input type="password" name="password" placeholder="비밀번호" required>
+
+                <div th:if="${param.error}" class="login-error">
+                    이메일 또는 비밀번호가 잘못되었습니다.
+                </div>
+
+                <div class="social-section">
+                    <div class="social-icons">
+                        <a href="/oauth2/authorization/naver"><img src="/images/naver.png" class="sns-icon"></a>
+                        <a href="/oauth2/authorization/kakao"><img src="/images/kakako.png" class="sns-icon"></a>
+                        <a href="/oauth2/authorization/google"><img src="/images/google.png" class="sns-icon"></a>
+                    </div>
+
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember-me"> 자동로그인
+                    </label>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn">로그인</button>
+                    <button type="button" id="switch-to-signup-trigger" class="btn">회원가입</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 회원가입 모달 -->
+    <div id="signup-modal-overlay" class="login-modal-overlay">
+        <div class="login-modal-content">
+            <span id="signup-modal-close" class="login-modal-close">&times;</span>
+
+            <div class="modal-logo">
+                <img src="/images/자바빈로고 1.png" th:src="@{/images/자바빈로고 1.png}" alt="JavaBean Logo">
+            </div>
+
+            <form id="modalSignupForm" class="login-form">
+
+                <div class="form-field-group">
+                    <div class="input-with-button">
+                        <input type="email" name="email" id="signup-email" placeholder="이메일" required>
+                        <button type="button" id="check-email-button" class="btn-check-duplicate">중복확인</button>
+                    </div>
+                    <div class="error-message" data-field="email"></div>
+                    <div class="success-message" data-field="email"></div>
+                </div>
+
+                <div class="form-field-group">
+                    <input type="text" name="username" placeholder="이름(닉네임)" required>
+                </div>
+                <div class="form-field-group">
+                    <input type="password" name="password" id="signup-password" placeholder="비밀번호" required>
+                </div>
+
+                <div class="form-field-group">
+                    <input type="password" name="passwordCheck" id="signup-password-check" placeholder="비밀번호 확인" required>
+                    <div class="error-message" data-field="passwordCheck"></div>
+                    <div class="success-message" data-field="passwordCheck"></div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn">회원가입</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="/js/main.js"></script>
+
     </body>
 </th:block>
 </html>
