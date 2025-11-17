@@ -23,7 +23,7 @@
                 <a th:each="item : ${menuItems}"
                    th:href="@{/home/order_detail(id=${item.menuId})}"
                    class="menu-link">
-                    <div class="menu-item">
+                    <div class="menu-item" th:data-menu-id="${item.menuId}">
                         <!-- 메뉴 이미지 -->
                         <img th:src="@{'/images/img/' + ${item.menuImg}}"
                              th:alt="${item.menuName}"
@@ -34,6 +34,7 @@
                             <div class="menu-name" th:text="${item.menuName}"></div>
                             <!-- 가격 -->
                             <div class="menu-price"
+                                 th:data-price="${item.menuPrice}"
                                  th:text="${#numbers.formatInteger(item.menuPrice, 0)} + '원'">
                             </div>
                         </div>

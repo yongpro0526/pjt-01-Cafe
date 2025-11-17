@@ -24,7 +24,7 @@
                    th:href="@{/home/order_detail(id=${item.menuId})}"
                    class="menu-link">
 
-                    <div class="menu-item">
+                    <div class="menu-item" th:data-menu-id="${item.menuId}">
 
                         <!-- 이미지 -->
                         <img th:src="@{'/images/img/' + ${item.menuImg}}"

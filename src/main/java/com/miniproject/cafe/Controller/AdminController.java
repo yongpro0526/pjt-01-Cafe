@@ -17,7 +17,7 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    // 🔹 개행 문자 제거하는 sanitizing 메서드 추가
+    // 개행 문자 제거하는 sanitizing 메서드 추가
     private String sanitize(String msg) {
         if (msg == null) return "";
         return msg.replaceAll("[\r\n]", "");  // CR/LF 제거
@@ -44,7 +44,7 @@ public class AdminController {
             adminService.register(vo);
         } catch (RuntimeException e) {
 
-            // 🔥 개행 제거 적용
+            // 개행 제거 적용
             return "redirect:/admin/signup?error=" + sanitize(e.getMessage());
         }
 
@@ -70,7 +70,7 @@ public class AdminController {
 
         } catch (RuntimeException e) {
 
-            // 🔥 로그인 실패 메시지도 sanitize 적용
+            // 로그인 실패 메시지도 sanitize 적용
             return "redirect:/admin/login?error=" + sanitize(e.getMessage());
         }
 

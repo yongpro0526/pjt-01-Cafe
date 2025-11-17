@@ -26,7 +26,7 @@
                    th:href="@{/home/order_detail(id=${item.menuId})}"
                    class="menu-link">
 
-                    <div class="menu-item">
+                    <div class="menu-item" th:data-menu-id="${item.menuId}">
 
                         <!-- 이미지 -->
                         <img th:src="@{'/images/img/' + ${item.menuImg}}"
@@ -54,7 +54,8 @@
                         </div>
 
                         <!-- 찜 버튼 -->
-                        <span class="like-button" onclick="toggleLike(this, event)">♡</span>
+                        <span class="like-button"
+                              onclick="toggleLike(this, event)">♡</span>
 
                     </div>
                 </a>
