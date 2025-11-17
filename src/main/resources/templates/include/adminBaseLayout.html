@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="setContent(adminContent)">
+    <header class="top-bar">
+        <div class="logo-section">
+            <span class="logo-icon">☕</span>
+            <span class="logo-text">JavaBean</span>
+        </div>
+    </header>
+
+    <th:block th:replace="${adminContent}"></th:block>
+
+</th:block>
+</html>

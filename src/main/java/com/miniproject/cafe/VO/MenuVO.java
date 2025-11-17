@@ -1,8 +1,12 @@
 package com.miniproject.cafe.VO;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MenuVO {
     private String menuId;
     private String menuName;
@@ -10,5 +14,7 @@ public class MenuVO {
     private String salesStatus;
     private String menuImg;
     private String menuPrice;
-    private boolean hotAvailable ;
+    private int hotAvailable ;
+    private String menuDefinition;
+    private String storeName;
 }
