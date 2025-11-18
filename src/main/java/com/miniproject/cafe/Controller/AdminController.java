@@ -25,10 +25,12 @@ public class AdminController {
     }
 
     @GetMapping("/orders")
-    public String adminOrders(HttpSession session) {
+    public String adminOrders(HttpSession session, Model model) {
         if (session.getAttribute("adminId") == null) {
             return "redirect:/admin/login";
         }
+        //로그인 상태 전달
+        model.addAttribute("isLoggedIn", session.getAttribute("adminId") != null);
         return "admin_orders";
     }
 
@@ -59,7 +61,11 @@ public class AdminController {
 
     // 로그인 화면
     @GetMapping("/login")
-    public String adminLogin() {
+    public String adminLogin(HttpSession session, Model model) {
+        // 세션에 adminId가 있으면 로그인 상태
+        boolean isLoggedIn = session.getAttribute("adminId") != null;
+        model.addAttribute("isLoggedIn", isLoggedIn);
+
         return "admin_login";
     }
 
@@ -89,5 +95,12 @@ public class AdminController {
     public String checkId(@RequestParam String id) {
         int count = adminService.checkId(id);
         return count > 0 ? "duplicate" : "available";
+    }
+
+    //로그아웃 처리
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // 세션 초기화
+        return "redirect:/admin/login";
     }
 }
