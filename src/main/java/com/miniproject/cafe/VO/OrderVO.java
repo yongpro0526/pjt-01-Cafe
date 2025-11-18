@@ -19,6 +19,7 @@ public class OrderVO {
     private int totalQuantity;    // 총 수량
     private int totalPrice;       // 총 금액
     private String orderType; // 주문 유형 (매장, 포장, 배달)
+    private String storeName; //매장명
 
     private String uId;
     private String orderStatus;

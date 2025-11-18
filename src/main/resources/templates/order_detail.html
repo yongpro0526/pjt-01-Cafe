@@ -10,6 +10,9 @@
       <h1 th:text="${menu.menuName}">메뉴 이름</h1>
       <p class="desc" th:utext="${menu.menuDefinition}">메뉴 설명</p>
       <form name="orderDetailForm" action="orderComplete" method="post">
+          <input type="hidden" id="menuName" value="[[${menu.menuName}]]">
+          <input type="hidden" id="menuPrice" value="[[${menu.menuPrice}]]">
+          <input type="hidden" id="menuId" value="[[${menu.menuId}]]">
         <div class="section">
           <div class="menu-info" id="detailBtn">메뉴 상세 정보 <span>›</span></div>
             <div class="segmented-wrap"
@@ -85,7 +88,7 @@
       </form>
   </div>
 </th:block>
-  <script src="/js/orderdetail.js"></script>
+  <script src="/js/order_detail.js"></script>
 </html>
 
 

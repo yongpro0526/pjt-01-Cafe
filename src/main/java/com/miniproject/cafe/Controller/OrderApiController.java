@@ -23,17 +23,19 @@ public class OrderApiController {
     public ResponseEntity<OrderVO> createOrder(@RequestBody OrderVO order) {
         try {
             OrderVO createdOrder = orderService.createOrder(order);
-            return ResponseEntity.status(200).body(createdOrder); // 성공 응답 (HTTP 200 OK)
+            return ResponseEntity.ok(createdOrder);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(null);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     //주문 목록 조회
     @GetMapping("/admin-list")
-    public ResponseEntity<List<OrderVO>> getAdminOrderList() {
-        List<OrderVO> orders = orderService.getAdminOrderList();
+    public ResponseEntity<List<OrderVO>> getAdminOrderList(
+            @RequestParam("storeName") String storeName) {
+
+        List<OrderVO> orders = orderService.getOrdersByStore(storeName);
         return ResponseEntity.ok(orders);
     }
 
@@ -46,17 +48,15 @@ public class OrderApiController {
         String newStatus = payload.get("status"); // "주문완료" 또는 "주문취소"
 
         if (newStatus == null || newStatus.isEmpty()) {
-            return ResponseEntity.badRequest().build(); // 400 Bad Request
+            return ResponseEntity.badRequest().build();
         }
 
         try {
-            // 서비스 호출
             orderService.updateOrderStatus(newStatus, orderId);
-            return ResponseEntity.ok().build(); // 200 OK
-
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().build(); // 500 Internal Server Error
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
