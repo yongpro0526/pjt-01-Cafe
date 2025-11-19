@@ -201,6 +201,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 5. ⭐ [핵심] 주문 데이터 생성 (OrderVO 구조 맞춤)
     // ==========================================
     function preparePaymentData(selectedItems) {
+        let storeNameInput = document.getElementById('currentStoreName');
+        let storeName = storeNameInput ? storeNameInput.value : "";
+
         let orderItems = [];
         let totalQty = 0;
 
@@ -217,19 +220,14 @@ document.addEventListener('DOMContentLoaded', function() {
             let qty = parseInt(item.querySelector('.item-quantity').dataset.quantity);
 
             // (1) 메뉴 ID 가져오기
-            // HTML에 th:data-menu-id="${item.MENU_ID}"가 있어야 정확합니다.
-            // 없으면 cartItemId라도 보내도록 처리 (방어 코드)
             let menuId = item.dataset.menuId || item.dataset.cartItemId;
 
             // (2) 상세 옵션 정보 추출
-            // HTML .cart-item 태그의 data 속성에서 가져옵니다.
-            // (HTML에 th:data-shot-count="..." 등이 없으면 0으로 처리됨)
             let shot = parseInt(item.dataset.shotCount || 0);
             let vanillaSyrup = parseInt(item.dataset.vanillaSyrupCount || 0);
             let whippedCream = parseInt(item.dataset.whippedCreamCount || 0);
 
             // 온도 (ICE/HOT) 추출
-            // 화면에 표시된 텍스트(HOT/ICE)를 가져오거나, 없으면 기본값 'ICE'
             let tempElement = item.querySelector('.item-temp');
             let tempText = tempElement ? tempElement.textContent.trim() : 'ICE';
 
@@ -239,10 +237,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // (3) 리스트에 추가
             orderItems.push({
-                menuId: menuId, // DB 저장용 메뉴 ID (문자열)
+                menuId: menuId,
                 menuItemName: item.querySelector('.item-name').textContent.trim(),
                 quantity: qty,
-                // --- 상세 옵션 ---
                 temp: tempText,
                 tumbler: isTumbler,
                 shot: shot,
@@ -258,20 +255,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let orderType = (deliveryBtn && deliveryBtn.dataset.type === 'delivery') ? "배달" : "포장";
 
         // 3. 총 결제 금액 (화면에 계산된 최종 금액에서 숫자만 추출)
-        const totalStr = document.getElementById('finalTotalPrice').textContent;
-        const finalPrice = parseInt(totalStr.replace(/[^0-9]/g, ''));
-
-        // 4. ⭐ [중요] 매장 이름 가져오기 (cart.html의 hidden input)
-        const storeNameInput = document.getElementById('currentStoreName');
-
-        // 디버깅용 로그: 값이 잘 읽히는지 확인하세요!
-        if (storeNameInput) {
-            console.log("🛒 [preparePaymentData] HTML에서 읽은 매장명:", storeNameInput.value);
-        } else {
-            console.error("❌ [preparePaymentData] 매장명 input(#currentStoreName)을 찾을 수 없습니다!");
-        }
-
-        const storeName = storeNameInput ? storeNameInput.value : "";
+        let totalStr = document.getElementById('finalTotalPrice').textContent;
+        let finalPrice = parseInt(totalStr.replace(/[^0-9]/g, ''));
 
         // 5. 최종 데이터 반환 (OrderVO 구조)
         return {
@@ -280,8 +265,8 @@ document.addEventListener('DOMContentLoaded', function() {
             orderType: orderType,
             orderStatus: "주문접수",
             uId: currentUserId || "guest",
-            storeName: storeName,  // ⭐ DB store_name 컬럼에 저장될 값
-            orderItemList: orderItems // 상세 메뉴 리스트
+            storeName: storeName,
+            orderItemList: orderItems
         };
     }
 
@@ -300,34 +285,42 @@ document.addEventListener('DOMContentLoaded', function() {
         isProcessingPayment = true;
         setPaymentButtonLoading(true);
 
-        // 데이터 준비
         let paymentData = preparePaymentData(selectedItems);
 
-        // 디버깅용 로그 (나중에 삭제 가능)
-        console.log("주문 전송 데이터:", paymentData);
-
         try {
-            // API 호출 (/api/orders/create)
-            const response = await fetch('/api/orders/create', {
+            // 1. 주문 생성 API 호출
+            let response = await fetch('/api/orders/create', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(paymentData)
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
+                let errorText = await response.text();
                 throw new Error('주문 실패: ' + errorText);
             }
 
-            // 성공 시
+            // 2. ✅ 주문 성공 시 DB에서 선택된 장바구니 아이템들 삭제
+            let deletePromises = [];
+            selectedItems.forEach(function(checkbox) {
+                let cartItem = checkbox.closest('.cart-item');
+                let cartItemId = cartItem.dataset.cartItemId;
+                if (cartItemId) {
+                    // 🔥 이 함수가 DB 테이블에서 row를 삭제하는 API 호출
+                    deletePromises.push(deleteCartItem(cartItemId));
+                }
+            });
+
+            // 모든 삭제 API 호출이 완료될 때까지 대기
+            await Promise.all(deletePromises);
+
+            console.log('✅ 주문 생성 및 장바구니 삭제 완료');
             alert('주문이 완료되었습니다!');
-            window.location.href = "/home/"; // 홈으로 이동
+            window.location.href = "/home/";
 
         } catch (error) {
             console.error('주문 처리 중 오류:', error);
-            alert('주문 처리 중 오류가 발생했습니다.');
+            alert('주문 처리 중 오류가 발생했습니다: ' + error.message);
         } finally {
             setPaymentButtonLoading(false);
             isProcessingPayment = false;

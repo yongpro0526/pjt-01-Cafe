@@ -127,26 +127,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     if (orderBtn) {
-        orderBtn.addEventListener("click", (e) => {
-            e.preventDefault();
+        const isHomePage =
+            window.location.pathname === '/home/';
 
-            // 1) 로그인 여부 확인 (기존 로직 유지)
-            if (typeof IS_LOGGED_IN !== 'undefined' && !IS_LOGGED_IN) {
-                const loginModalOverlay = document.getElementById("login-modal-overlay");
-                if (loginModalOverlay) {
-                    loginModalOverlay.classList.add("show");
-                    const closeBtn = document.getElementById("login-modal-close");
-                    if(closeBtn) closeBtn.onclick = () => loginModalOverlay.classList.remove("show");
-                } else {
-                    alert("로그인이 필요합니다.");
-                    window.location.href = "/home/";
+        if (isHomePage && userRegion) {
+            orderBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+
+                // 1) 로그인 여부 확인 (기존 로직 유지)
+                if (typeof IS_LOGGED_IN !== 'undefined' && !IS_LOGGED_IN) {
+                    const loginModalOverlay = document.getElementById("login-modal-overlay");
+                    if (loginModalOverlay) {
+                        loginModalOverlay.classList.add("show");
+                        const closeBtn = document.getElementById("login-modal-close");
+                        if (closeBtn) closeBtn.onclick = () => loginModalOverlay.classList.remove("show");
+                    } else {
+                        alert("로그인이 필요합니다.");
+                        window.location.href = "/home/";
+                    }
+                    return;
                 }
-                return;
-            }
 
-            // 2) 로그인 통과 시 -> 화면 값 읽어서 바로 이동
-            goToMenu();
-        });
+                goToMenu();
+            });
+        }
     }
 
     /* ===========================
