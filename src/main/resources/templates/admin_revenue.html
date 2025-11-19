@@ -70,6 +70,41 @@
                     "총 매출 금액: " + total.toLocaleString() + "원";
             });
     }
+
+    function updateRevenuePage() {
+        // admin_revenue.html에 loadData() 함수와 동일한 역할
+        const dateInput = document.getElementById("date");
+        const date = dateInput ? dateInput.value : ""; // 날짜 선택값 가져오기
+
+        let url = "/admin/revenue/orders";
+        if(date) url += "?date=" + date;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById("orderTableBody");
+                if(!tbody) return; // admin_revenue.html이 열려있지 않으면 스킵
+                tbody.innerHTML = "";
+
+                let total = 0;
+                data.forEach(order => {
+                    total += Number(order.orderAmount);
+                    const row = `
+                    <tr>
+                        <td>${order.orderTime}</td>
+                        <td>${order.orderId}</td>
+                        <td>${Number(order.orderAmount).toLocaleString()}원</td>
+                        <td>${order.orderType}</td>
+                    </tr>
+                `;
+                    tbody.innerHTML += row;
+                });
+
+                const totalRevenue = document.getElementById("totalRevenue");
+                if(totalRevenue) totalRevenue.innerText = "총 매출 금액: " + total.toLocaleString() + "원";
+            });
+    }
+
 </script>
 
 

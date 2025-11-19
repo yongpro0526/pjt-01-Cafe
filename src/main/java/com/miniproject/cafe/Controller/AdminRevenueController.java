@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -43,6 +44,17 @@ public class AdminRevenueController {
 
         return "admin_revenue";
     }
+
+    @GetMapping("/revenue/orders")
+    @ResponseBody
+    public List<AdminRevenueVO> getRevenueOrders(@RequestParam(required = false) String date) {
+        if(date == null || date.isEmpty()) {
+            return adminRevenueService.getAllOrders();
+        } else {
+            return adminRevenueService.getOrdersByDate(date);
+        }
+    }
+
 
 
 }

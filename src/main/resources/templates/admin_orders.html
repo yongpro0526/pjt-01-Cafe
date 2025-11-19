@@ -319,6 +319,28 @@
         connectSSE(storeName);    // SSE 연결
 
     });
+
+    document.querySelectorAll(".complete").forEach(button => {
+        button.addEventListener("click", function() {
+            const orderId = this.closest(".card-menu-dropdown").id.split("-")[2]; // dropdown-${orderId}에서 orderId 추출
+            const status = this.dataset.status; // "주문완료"
+
+            fetch(`/api/orders/status/${orderId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: status })
+            })
+                .then(res => {
+                    if(res.ok){
+                        alert("주문 완료 처리됨!");
+                        // ① 현재 주문관리 페이지 새로고침 또는 업데이트
+                        // ② 매출페이지에 반영
+                        updateRevenuePage();
+                    }
+                });
+        });
+    });
+
 </script>
 
 
