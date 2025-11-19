@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/home/saveRegion", "/home/getRegion").permitAll()
 
                         // 로그인 필요 페이지들
-                        .requestMatchers("/home/order_history", "/home/mypick", "/home/cart", "/account/**").authenticated()
+                        .requestMatchers("/home/order_history", "/home/mypick", "/home/cart", "/home/account").authenticated()
 
                         .anyRequest().permitAll()
                 )

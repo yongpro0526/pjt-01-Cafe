@@ -37,62 +37,66 @@
 
     <select id="findOrdersByStore" resultMap="orderMap">
         SELECT
-            o.order_id,
-            o.u_id,            m.username,        o.order_status,
-            o.total_price,
-            o.pickup_method,
-            o.order_time,
-            o.store_name,
-            o.total_quantity,
+        o.order_id,
+        o.u_id,
+        m.username,
+        o.order_status,
+        o.total_price,
+        o.pickup_method,
+        o.order_time,
+        o.store_name,
+        o.total_quantity,
+        o.daily_order_num,     <!-- ★ 저장된 컬럼 그대로 사용 -->
 
-            -- 일일 주문 번호
-            ROW_NUMBER() OVER (PARTITION BY DATE(o.order_time) ORDER BY o.order_time ASC) as daily_order_num,
-
-            -- 상세 아이템 및 옵션 정보
-            od.order_detail_id,
-            od.menu_id,
-            m_menu.menu_name,
-            od.amount AS item_amount,
-
-            -- 옵션 컬럼들
-            od.temp,
-            od.tumbler,
-            od.shot,
-            od.vanilla_syrup,
-            od.whipped_cream
+        od.order_detail_id,
+        od.menu_id,
+        m_menu.menu_name,
+        od.amount AS item_amount,
+        od.temp,
+        od.tumbler,
+        od.shot,
+        od.vanilla_syrup,
+        od.whipped_cream
 
         FROM orders o
-                 -- 상세 내역 조인
-                 LEFT JOIN order_detail od ON o.order_id = od.order_id
-            -- 메뉴 이름 조인
-                 LEFT JOIN menu m_menu ON od.menu_id = m_menu.menu_id
-            -- ⭐ [핵심 수정] orders의 u_id와 member의 id를 조인
-                 LEFT JOIN member m ON o.u_id = m.id
+        LEFT JOIN order_detail od ON o.order_id = od.order_id
+        LEFT JOIN menu m_menu ON od.menu_id = m_menu.menu_id
+        LEFT JOIN member m ON o.u_id = m.id
 
         WHERE o.store_name = #{storeName}
-          AND o.order_status = '주문접수'
+        AND o.order_status = '주문접수'
 
-        ORDER BY o.order_time DESC
+        ORDER BY o.daily_order_num DESC   <!-- ★ 반드시 저장된 컬럼 기준으로 -->
     </select>
 
     <insert id="insertOrder" parameterType="com.miniproject.cafe.VO.OrderVO"
             useGeneratedKeys="true" keyProperty="orderId">
+
         INSERT INTO orders (
-            u_id,             order_status,
+            u_id,
+            order_status,
             total_price,
             pickup_method,
             order_time,
             total_quantity,
-            store_name
+            store_name,
+            daily_order_num
         )
         VALUES (
-                   #{uId},           #{orderStatus},
+                   #{uId},
+                   #{orderStatus},
                    #{totalPrice},
                    #{orderType},
                    #{orderTime},
                    #{totalQuantity},
-                   #{storeName}
-               )
+                   #{storeName},
+                   (
+                       SELECT COALESCE(MAX(o2.daily_order_num), 0) + 1
+                       FROM orders o2
+                       WHERE DATE(o2.order_time) = CURDATE()
+              AND o2.store_name = #{storeName}
+            )
+        )
     </insert>
 
     <insert id="insertOrderDetails" parameterType="java.util.List">
@@ -127,4 +131,45 @@
         WHERE order_id = #{orderId}
     </update>
 
+    <select id="findOrderById" resultMap="orderMap">
+        SELECT
+            o.order_id,
+            o.u_id,
+            m.username,
+            o.order_status,
+            o.total_price,
+            o.pickup_method,
+            o.order_time,
+            o.store_name,
+            o.total_quantity,
+
+            o.daily_order_num,
+
+            od.order_detail_id,
+            od.menu_id,
+            m_menu.menu_name,
+            od.amount AS item_amount,
+
+            od.temp,
+            od.tumbler,
+            od.shot,
+            od.vanilla_syrup,
+            od.whipped_cream
+
+        FROM orders o
+                 LEFT JOIN order_detail od ON o.order_id = od.order_id
+                 LEFT JOIN menu m_menu ON od.menu_id = m_menu.menu_id
+                 LEFT JOIN member m ON o.u_id = m.id
+
+        WHERE o.order_id = #{orderId}
+          AND o.store_name = #{storeName}
+
+        ORDER BY od.order_detail_id ASC
+    </select>
+
+    <select id="findStoreNameByOrderId" resultType="string">
+        SELECT store_name
+        FROM orders
+        WHERE order_id = #{orderId}
+    </select>
 </mapper>

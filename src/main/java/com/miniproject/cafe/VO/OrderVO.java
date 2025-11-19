@@ -1,6 +1,8 @@
 package com.miniproject.cafe.VO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +14,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class OrderVO {
 
     private Long orderId;      // 주문 번호 (#0001)
@@ -23,6 +24,7 @@ public class OrderVO {
 
     @JsonProperty("storeName")
     private String storeName; //매장명
+
     @JsonProperty("uId")
     private String uId; //사용자아이디
 
@@ -32,5 +34,6 @@ public class OrderVO {
 
     private List<OrderItemVO> orderItemList;
 
-    private Long dailyOrderNum;
+    @JsonProperty("dailyOrderNum")
+    private Integer dailyOrderNum;
 }

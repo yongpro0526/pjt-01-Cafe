@@ -28,6 +28,8 @@ public class OAuthLoginSuccessHandler implements AuthenticationSuccessHandler {
         String email = authentication.getName();
         MemberVO member = memberMapper.findByEmail(email);
 
+        request.getSession().setAttribute("member", member);
+
         FlashMap flash = new FlashMap();
         flash.put("loginSuccessType", "oauth");
         flash.put("loginMemberName", member.getUsername());

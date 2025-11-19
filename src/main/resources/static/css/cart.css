@@ -178,8 +178,8 @@ body {
     width: 60px;
     height: 80px;
     object-fit: contain;
-    margin-right: 15px;
     border-radius: 8px;
+    flex-shrink: 0;
 }
 
 .item-details {

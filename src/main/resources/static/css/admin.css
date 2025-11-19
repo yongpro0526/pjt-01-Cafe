@@ -183,6 +183,22 @@ a {
     flex-direction: column;
     justify-content: space-between;
     position: relative;
+
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    visibility: hidden;
+}
+
+.order-card.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.order-card.hide {
+    opacity: 0;
+    transform: translateY(-15px);
 }
 
 .order-card.type-store { background-color: var(--card-green); }

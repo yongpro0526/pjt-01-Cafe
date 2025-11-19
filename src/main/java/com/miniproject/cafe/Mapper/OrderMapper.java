@@ -15,4 +15,11 @@ public interface OrderMapper {
     void insertOrderDetails(List<OrderItemVO> list);
     void updateOrderStatus(@Param("status") String status,
                            @Param("orderId") Long orderId); //주문 상태 완료 취소
+
+
+    String findStoreNameByOrderId(@Param("orderId") Long orderId);
+
+    //매장 필터가 포함된 단일 주문 조회
+    OrderVO findOrderById(@Param("orderId") Long orderId,
+                          @Param("storeName") String storeName);
 }

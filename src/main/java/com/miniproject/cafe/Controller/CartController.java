@@ -26,23 +26,16 @@ public class CartController {
     @GetMapping("/cart")
     public String cartPage(Authentication auth, Model model, HttpSession session) {
 
-        // 1. 로그인 체크
         if (auth == null || !auth.isAuthenticated()) {
             return "redirect:/home/";
         }
 
-        // 2. 세션에서 매장 정보 가져오기 (URL 파라미터 사용 X)
         String currentStore = (String) session.getAttribute("storeName");
-
-        // 3. 방어 로직: 세션에 매장 정보가 없으면 메인으로 튕겨내기
-        // (사용자가 매장 선택 없이 URL로 직접 접근하는 것 방지)
         if (currentStore == null || currentStore.trim().isEmpty()) {
             return "redirect:/home/";
         }
-        System.out.println("🛒 [CartController] 세션값: [" + currentStore + "]");
         model.addAttribute("storeName", currentStore);
 
-        // 5. 사용자 ID 가져오기
         String memberId = auth.getName();
         Map<String, Object> cartData;
 

@@ -80,11 +80,11 @@ public class HomeController {
     @GetMapping("/account")
     public String account(Authentication auth, HttpSession session, Model model) {
         if(auth == null || !auth.isAuthenticated()) {
-            return "redirect:/login";
+            return "redirect:/home/";
         }
         MemberVO member = (MemberVO) session.getAttribute("member");
         if(member == null) {
-            return "redirect:/login";
+            return "redirect:/home/";
         }
         model.addAttribute("member", member);
         return "mypage";
