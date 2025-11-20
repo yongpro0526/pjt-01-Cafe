@@ -5,8 +5,10 @@ import com.miniproject.cafe.VO.MemberVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.support.SessionFlashMapManager;
@@ -18,6 +20,7 @@ import java.io.IOException;
 public class OAuthLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final MemberMapper memberMapper;
+    private final RememberMeServices rememberMeServices;
 
     @Override
     public void onAuthenticationSuccess(
@@ -37,6 +40,7 @@ public class OAuthLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // 세션에 로그인 회원 저장
         request.getSession().setAttribute("member", member);
+        rememberMeServices.loginSuccess(request, response, authentication);
 
         // 로그인 성공 토스트 메시지용 flash
         FlashMap flash = new FlashMap();
