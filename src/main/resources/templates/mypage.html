@@ -11,7 +11,7 @@
         <div class="welcome-box">
             <img src="/images/img/자바빈로고 1.png" class="welcome-logo" alt="">
             <div class="welcome-text">
-                <span th:text="${member.username}"></span>님<br>
+                <span th:if="${member != null}" th:text="${member.username}"></span>님<br>
                 안녕하세요🙌
             </div>
         </div>

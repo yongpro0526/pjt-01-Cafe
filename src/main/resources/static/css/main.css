@@ -325,7 +325,7 @@ main.container {
 
 /* 리워드 섹션 */
 .reward-section {
-    background-color: rgba(248, 199, 157, 0.85); /* 기존 색상 + 85% 불투명도 */
+    background-color: rgba(213, 185, 164, 0.85); /* 기존 색상 + 85% 불투명도 */
     margin: 20px 15px;
     padding: 15px;
     border-radius: 15px;
