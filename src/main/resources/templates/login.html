@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+
+<th:block th:replace="~{./include/userBaseLayout :: setContent( ~{:: .wrap} ) }">
+    <div class="wrap">
+        <div class="login-bg">
+            <div class="login-page-wrapper">
+                <div class="login-top-section">
+                    <img src="/images/자바빈로고 1.png" th:src="@{/images/자바빈로고 1.png}" alt="JavaBean Logo" class="logo-img">
+                    <span class="brand-name">JAVABEAN COFFEE</span>
+                    <div class="slogan-title">Quick & Easy</div>
+                    <div class="slogan-subtitle">기다림 없는 주문</div>
+                </div>
+
+                <div class="login-bottom-section">
+
+                    <div id="login-options-group" class="btn-group fade-in">
+                        <a href="/oauth2/authorization/kakao" class="login-btn btn-kakao-full">
+                            <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                                 alt="Kakao"
+                                 class="social-icon-inside-btn">
+                            카카오 로그인
+                        </a>
+
+                        <button type="button" id="show-social-login-btn" class="login-btn btn-other-login">
+                            다른 방법으로 로그인
+                        </button>
+                    </div>
+
+                    <div id="social-login-group" class="btn-group hidden-group">
+                        <a href="/oauth2/authorization/naver" class="login-btn btn-naver-full">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/naver.svg"
+                                 alt="Naver"
+                                 class="social-icon-inside-btn"
+                                 style="filter: invert(1);"> 네이버 로그인
+                        </a>
+
+                        <a href="/oauth2/authorization/google" class="login-btn btn-google-full">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+                                 alt="Google"
+                                 class="social-icon-inside-btn"> Google 로그인
+                        </a>
+
+                        <button type="button" id="back-to-login-btn" class="login-btn btn-cancel">
+                            취소
+                        </button>
+                    </div>
+
+                    <div id="signup-initial-section" class="signup-or-login-toggle-section fade-in">
+                        <div class="divider-with-text">
+                            <span class="text">또는</span>
+                        </div>
+                        <button type="button" id="show-signup-options-btn" class="login-btn btn-other-login signup-toggle-btn">
+                            회원가입
+                        </button>
+                    </div>
+
+                    <div id="social-signup-group" class="btn-group hidden-group">
+                        <a href="/oauth2/authorization/kakao" class="login-btn btn-kakao-full">
+                            <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                                 alt="Kakao"
+                                 class="social-icon-inside-btn">
+                            카카오 회원가입
+                        </a>
+
+                        <a href="/oauth2/authorization/naver?mode=signup" class="login-btn btn-naver-full">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/naver.svg"
+                                 alt="Naver Signup"
+                                 class="social-icon-inside-btn"
+                                 style="filter: invert(1);"> 네이버 회원가입
+                        </a>
+
+                        <a href="/oauth2/authorization/google?mode=signup" class="login-btn btn-google-full">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+                                 alt="Google Signup"
+                                 class="social-icon-inside-btn"> Google 회원가입
+                        </a>
+
+                        <a href="signup" class="login-btn btn-normal-full">
+                            일반 회원가입
+                        </a>
+
+                        <button type="button" id="back-to-main-btn" class="login-btn btn-cancel">
+                            취소
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // 기존 로그인 버튼 그룹 (카카오, 다른 방법으로 로그인)
+                const loginOptionsGroup = document.getElementById('login-options-group');
+                // 다른 방법으로 로그인 클릭 시 나오는 그룹 (네이버, 구글, 취소)
+                const socialLoginGroup = document.getElementById('social-login-group');
+                // "다른 방법으로 로그인" 버튼
+                const showSocialLoginBtn = document.getElementById('show-social-login-btn');
+                // 소셜 로그인 그룹 내 "취소" 버튼
+                const backToLoginBtn = document.getElementById('back-to-login-btn');
+
+                // 회원가입 초기 섹션 (--- 또는 ----, 회원가입 버튼)
+                const signupInitialSection = document.getElementById('signup-initial-section');
+                // 회원가입 클릭 시 나오는 그룹 (카카오, 네이버, 구글 회원가입, 취소)
+                const socialSignupGroup = document.getElementById('social-signup-group');
+                // "회원가입" 버튼
+                const showSignupOptionsBtn = document.getElementById('show-signup-options-btn');
+                // 회원가입 소셜 그룹 내 "취소" 버튼
+                const backToMainBtn = document.getElementById('back-to-main-btn');
+
+                // 초기 상태 설정
+                // loginOptionsGroup.style.display = 'flex'; // 이미 기본값으로 flex를 가짐
+                socialLoginGroup.style.display = 'none';
+                socialSignupGroup.style.display = 'none';
+
+                // --- 로그인 관련 이벤트 ---
+
+                // "다른 방법으로 로그인" 클릭 시
+                showSocialLoginBtn.addEventListener('click', function () {
+                    loginOptionsGroup.classList.add('fade-out'); // 기존 로그인 그룹 페이드 아웃
+                    signupInitialSection.classList.add('fade-out'); // 회원가입 섹션도 페이드 아웃
+
+                    setTimeout(function () {
+                        loginOptionsGroup.style.display = 'none';
+                        loginOptionsGroup.classList.remove('fade-out');
+
+                        signupInitialSection.style.display = 'none';
+                        signupInitialSection.classList.remove('fade-out');
+
+                        socialLoginGroup.style.display = 'flex'; // 소셜 로그인 그룹 표시
+                        void socialLoginGroup.offsetWidth; // 강제 리플로우
+                        socialLoginGroup.classList.remove('hidden-group');
+                        socialLoginGroup.classList.add('fade-in');
+                        setTimeout(() => socialLoginGroup.classList.remove('fade-in'), 350);
+                    }, 300);
+                });
+
+                // 소셜 로그인 "취소" 클릭 시
+                backToLoginBtn.addEventListener('click', function () {
+                    socialLoginGroup.classList.add('fade-out'); // 소셜 로그인 그룹 페이드 아웃
+
+                    setTimeout(function () {
+                        socialLoginGroup.style.display = 'none';
+                        socialLoginGroup.classList.remove('fade-out');
+                        socialLoginGroup.classList.add('hidden-group');
+
+                        loginOptionsGroup.style.display = 'flex'; // 기존 로그인 그룹 다시 표시
+                        signupInitialSection.style.display = 'flex'; // 회원가입 섹션 다시 표시
+
+                        void loginOptionsGroup.offsetWidth; // 강제 리플로우
+                        void signupInitialSection.offsetWidth; // 강제 리플로우
+
+                        loginOptionsGroup.classList.add('fade-in');
+                        signupInitialSection.classList.add('fade-in');
+
+                        setTimeout(() => {
+                            loginOptionsGroup.classList.remove('fade-in');
+                            signupInitialSection.classList.remove('fade-in');
+                        }, 350);
+                    }, 300);
+                });
+
+                // --- 회원가입 관련 이벤트 ---
+
+                // "회원가입" 버튼 클릭 시
+                showSignupOptionsBtn.addEventListener('click', function () {
+                    loginOptionsGroup.classList.add('fade-out'); // 기존 로그인 그룹 페이드 아웃
+                    signupInitialSection.classList.add('fade-out'); // 회원가입 초기 섹션 페이드 아웃
+
+                    setTimeout(function () {
+                        loginOptionsGroup.style.display = 'none';
+                        loginOptionsGroup.classList.remove('fade-out');
+
+                        signupInitialSection.style.display = 'none';
+                        signupInitialSection.classList.remove('fade-out');
+
+                        socialSignupGroup.style.display = 'flex'; // 소셜 회원가입 그룹 표시
+                        void socialSignupGroup.offsetWidth; // 강제 리플로우
+                        socialSignupGroup.classList.remove('hidden-group');
+                        socialSignupGroup.classList.add('fade-in');
+                        setTimeout(() => socialSignupGroup.classList.remove('fade-in'), 350);
+                    }, 300);
+                });
+
+                // 소셜 회원가입 "취소" 클릭 시
+                backToMainBtn.addEventListener('click', function () {
+                    socialSignupGroup.classList.add('fade-out'); // 소셜 회원가입 그룹 페이드 아웃
+
+                    setTimeout(function () {
+                        socialSignupGroup.style.display = 'none';
+                        socialSignupGroup.classList.remove('fade-out');
+                        socialSignupGroup.classList.add('hidden-group');
+
+                        loginOptionsGroup.style.display = 'flex'; // 기존 로그인 그룹 다시 표시
+                        signupInitialSection.style.display = 'flex'; // 회원가입 초기 섹션 다시 표시
+
+                        void loginOptionsGroup.offsetWidth; // 강제 리플로우
+                        void signupInitialSection.offsetWidth; // 강제 리플로우
+
+                        loginOptionsGroup.classList.add('fade-in');
+                        signupInitialSection.classList.add('fade-in');
+
+                        setTimeout(() => {
+                            loginOptionsGroup.classList.remove('fade-in');
+                            signupInitialSection.classList.remove('fade-in');
+                        }, 350);
+                    }, 300);
+                });
+            });
+        </script>
+    </div>
+</th:block>
+</html>

@@ -39,7 +39,7 @@ public class OAuth2FailureHandler implements AuthenticationFailureHandler {
         }
 
         // 루트(/)로 리다이렉트 (ContextPath 포함)
-        String redirectUrl = request.getContextPath() + "/home/?oauthError=" +
+        String redirectUrl = request.getContextPath() + "/home/login?oauthError=" +
                 URLEncoder.encode(alertMsg, StandardCharsets.UTF_8);
 
         response.sendRedirect(redirectUrl);

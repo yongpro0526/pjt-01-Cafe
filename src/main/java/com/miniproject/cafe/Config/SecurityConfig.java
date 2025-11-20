@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 @Configuration
 @EnableWebSecurity
@@ -20,11 +22,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomUserDetailsService customUserDetailsService;
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final FormLoginFailureHandler formLoginFailureHandler;
     private final FormLoginSuccessHandler formLoginSuccessHandler;
     private final OAuthLoginSuccessHandler oAuthLoginSuccessHandler;
+    private final RememberMeServices rememberMeServices;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,20 +37,20 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         // [핵심] "/", "/home" 둘 다 명확하게 허용 (슬래시 주의)
-                        .requestMatchers("/", "/home", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/api/member/**", "/oauth2/**").permitAll()
+                        .requestMatchers("/", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/api/member/**", "/login/oauth2/**").permitAll()
                         .requestMatchers("/menu/**").permitAll()
                         .requestMatchers("/home/saveRegion", "/home/getRegion").permitAll()
-
+                        .requestMatchers("/home/login").permitAll()
                         // 로그인 필요 페이지들
-                        .requestMatchers("/home/order_history", "/home/mypick", "/home/cart", "/home/account").authenticated()
+                        .requestMatchers("/home/**").authenticated()
 
                         .anyRequest().permitAll()
                 )
 
                 .formLogin(f -> f
                         // [핵심] 로그인 페이지를 루트("/")로 설정하여 경로 충돌 방지
-                        .loginPage("/home/")
+                        .loginPage("/home/login")
                         .loginProcessingUrl("/login")
                         .successHandler(formLoginSuccessHandler)
                         .failureHandler(formLoginFailureHandler)
@@ -56,7 +58,7 @@ public class SecurityConfig {
                 )
 
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/home/")     // 반드시 /home 으로 고정
+                        .loginPage("/home/login")     // 반드시 /home 으로 고정
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
@@ -66,16 +68,13 @@ public class SecurityConfig {
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/home/") // 로그아웃 후에도 루트로
+                        .logoutSuccessUrl("/home/login") // 로그아웃 후에도 루트로
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                 )
 
                 .rememberMe(r -> r
-                        .key("secure-key")
-                        .rememberMeParameter("remember-me")
-                        .tokenValiditySeconds(60 * 60 * 24 * 14)
-                        .userDetailsService(customUserDetailsService)
+                        .rememberMeServices(rememberMeServices)
                 );
 
         return http.build();
