@@ -4,18 +4,41 @@
     <title>Java Coffee</title>
 
     <!-- 로그인 여부 JS 전달 -->
-    <script th:inline="javascript">
-        const IS_LOGGED_IN = [[${IS_LOGGED_IN}]];
-    </script>
+    <th:block th:if="${IS_LOGGED_IN}">
+        <script th:inline="javascript">
+            const IS_LOGGED_IN = true;
+            const USER_ID = [[${#authentication.name}]];
+        </script>
+    </th:block>
 
+    <th:block th:if="${!IS_LOGGED_IN}">
+        <script>
+            const IS_LOGGED_IN = false;
+            const USER_ID = null;
+        </script>
+    </th:block>
+
+    <!-- 로그인 실패 시 메시지 -->
     <script th:if="${loginErrorMessage}">
         alert('[[${loginErrorMessage}]]');
     </script>
 
+    <!-- 로그인 성공 시 메시지 -->
     <script th:if="${loginSuccessType != null}">
         alert('[[${loginMemberName}]]님 환영합니다!');
     </script>
 
+    <!-- 스탬프/쿠폰 데이터 -->
+    <script th:inline="javascript">
+        const rewardData = /*[[${reward}]]*/ {stamps:0, coupons:0};
+        document.addEventListener('DOMContentLoaded', () => {
+            const stampEl = document.getElementById('stamp-count');
+            const couponEl = document.getElementById('coupon-count');
+
+            stampEl.innerText = `스탬프 ${rewardData.stamps}/10`;
+            couponEl.innerText = `쿠폰 ${rewardData.coupons}`;
+        });
+    </script>
 </head>
 
 <th:block th:replace="~{./include/userBaseLayout :: setContent( ~{:: .wrap} ) }">
@@ -29,7 +52,7 @@
 
         <!-- 메인 배너 -->
         <div class="main-banner">
-            <img src="/images/메인배너.png" alt="메인배너">
+            <img src="/images/메인배너교체.png" alt="메인배너">
         </div>
 
         <main class="container">
@@ -44,26 +67,17 @@
                 </div>
 
                 <div class="previous-orders-grid">
-                    <a href="#" class="previous-order-item login-required">
-                        <img src="/images/image2.png" alt="아메리카노">
-                        <p class="item-name">아메리카노</p>
-                    </a>
-                    <a href="#" class="previous-order-item login-required">
-                        <img src="/images/cafelatte.png" alt="카페라떼">
-                        <p class="item-name">카페라떼</p>
-                    </a>
-                    <a href="#" class="previous-order-item login-required">
-                        <img src="/images/capuchino.png" alt="카푸치노">
-                        <p class="item-name">카푸치노</p>
-                    </a>
-                    <a href="#" class="previous-order-item login-required">
-                        <img src="/images/vanillaLatte.png" alt="바닐라라떼">
-                        <p class="item-name">바닐라라떼</p>
-                    </a>
-                    <a href="#" class="previous-order-item login-required">
-                        <img src="/images/espresso.png" alt="에스프레소">
-                        <p class="item-name">에스프레소</p>
-                    </a>
+                    <th:block th:if="${#lists.isEmpty(recentOrders)}">
+                        <p style="font-size:14px; color:#555">최근 주문내역이 없습니다.</p>
+                    </th:block>
+                    <th:block th:each="item : ${recentOrders}">
+                        <a th:href="@{'/home/order_history'}" class="previous-order-item login-required">
+                            <img th:src="@{'/upload/menuImg/' + ${item.menuImg}}"
+                                 th:alt="${item.menuName}"
+                                 class="menu-image">
+                            <p class="item-name" th:text="${item.menuName}"></p>
+                        </a>
+                    </th:block>
                 </div>
             </section>
 
@@ -71,22 +85,23 @@
             <section class="reward-section">
                 <div class="reward-item">
                     <span class="icon stamp-icon"><i class="fa-solid fa-stamp"></i></span>
-                    <span class="text">스탬프 0/10</span>
+                    <span class="text" id="stamp-count">스탬프 0/10</span>
                 </div>
 
                 <div class="divider"></div>
 
                 <div class="reward-item">
                     <span class="icon coupon-icon">🎟️</span>
-                    <span class="text">쿠폰 0</span>
+                    <span class="text" id="coupon-count">쿠폰 0</span>
                 </div>
             </section>
+
 
             <div class="region">
                 <span class="region-label">구매할 지점을 선택하세요.</span>
                 <form action="region">
                     <select name="userRegion" id="userRegion">
-                        <option value="" disabled selected>지점 선택</option>
+                        <option value="none" disabled selected hidden>지점 선택</option>
                         <option value="강남중앙점">자바빈카페 강남중앙점</option>
                         <option value="역삼중앙점">자바빈카페 역삼중앙점</option>
                         <option value="선릉중앙점">자바빈카페 선릉중앙점</option>

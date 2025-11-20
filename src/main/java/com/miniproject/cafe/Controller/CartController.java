@@ -31,9 +31,6 @@ public class CartController {
         }
 
         String currentStore = (String) session.getAttribute("storeName");
-        if (currentStore == null || currentStore.trim().isEmpty()) {
-            return "redirect:/home/";
-        }
         model.addAttribute("storeName", currentStore);
 
         String memberId = auth.getName();

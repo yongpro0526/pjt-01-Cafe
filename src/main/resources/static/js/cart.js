@@ -9,6 +9,35 @@ document.addEventListener('DOMContentLoaded', function() {
     let API_BASE_URL = '/home/cart';
 
     // ==========================================
+    // 2. "메뉴 보러가기" 버튼 지점 선택 체크
+    // ==========================================
+
+    const goToMenuBtn = document.querySelector('.go-to-menu-btn');
+
+    if (goToMenuBtn) {
+        goToMenuBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+
+            try {
+                const resp = await fetch("/home/getRegion");
+                const storeName = await resp.text();
+
+                if (!storeName || storeName === "null" || storeName.trim() === "") {
+                    alert("주문할 매장을 먼저 선택해주세요.");
+                    window.location.href = '/home/';
+                } else {
+                    // 지점 선택되었으면 정상적으로 메뉴 페이지로 이동
+                    window.location.href = '/menu/coffee';
+                }
+            } catch (error) {
+                console.error("매장 확인 중 오류:", error);
+                alert("매장 정보를 확인하는 중 오류가 발생했습니다.");
+                window.location.href = '/home/';
+            }
+        });
+    }
+
+    // ==========================================
     // 2. 장바구니 API 통신 함수 (수량변경, 삭제)
     // ==========================================
 
@@ -197,6 +226,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    //요청사항
+    function getRequestText() {
+        let items = [];
+
+        // 체크박스(예: "빨대 빼주세요", "얼음 적게") 값 읽기
+        document.querySelectorAll('input[name="requestOption"]:checked')
+            .forEach(el => items.push(el.value));
+
+        // 직접입력 textarea 값 읽기
+        let directInput = document.getElementById('directRequest');
+        if (directInput && directInput.value.trim() !== "") {
+            items.push(directInput.value.trim());
+        }
+
+        // 아무 옵션도 선택 안 했으면 '없음'
+        return items.length > 0 ? items.join(", ") : "없음";
+    }
+
     // ==========================================
     // 5. ⭐ [핵심] 주문 데이터 생성 (OrderVO 구조 맞춤)
     // ==========================================
@@ -206,6 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let orderItems = [];
         let totalQty = 0;
+
+        let requestText = getRequestText();
 
         console.log("--------------------------------");
         console.log("🛒 [JS 데이터 점검]");
@@ -219,27 +268,32 @@ document.addEventListener('DOMContentLoaded', function() {
             let item = checkbox.closest('.cart-item');
             let qty = parseInt(item.querySelector('.item-quantity').dataset.quantity);
 
-            // (1) 메뉴 ID 가져오기
+            //옵션 ID
+            const optionId = parseInt(item.dataset.optionId);
+            console.log('[CHECK] cart item optionId =', optionId);
+
+            // 메뉴 ID
             let menuId = item.dataset.menuId || item.dataset.cartItemId;
 
-            // (2) 상세 옵션 정보 추출
+            // 상세 옵션 정보
             let shot = parseInt(item.dataset.shotCount || 0);
             let vanillaSyrup = parseInt(item.dataset.vanillaSyrupCount || 0);
             let whippedCream = parseInt(item.dataset.whippedCreamCount || 0);
 
-            // 온도 (ICE/HOT) 추출
+            // 온도 (ICE/HOT)
             let tempElement = item.querySelector('.item-temp');
             let tempText = tempElement ? tempElement.textContent.trim() : 'ICE';
 
-            // 텀블러 사용 여부 (옵션 텍스트 내 '텀블러' 포함 여부로 판단)
+            // 텀블러 사용 여부
             let optionsText = item.querySelector('.item-options') ? item.querySelector('.item-options').textContent : "";
             let isTumbler = optionsText.includes('텀블러') ? 1 : 0;
 
-            // (3) 리스트에 추가
+            // 리스트에 추가
             orderItems.push({
                 menuId: menuId,
                 menuItemName: item.querySelector('.item-name').textContent.trim(),
                 quantity: qty,
+                optionId: optionId,
                 temp: tempText,
                 tumbler: isTumbler,
                 shot: shot,
@@ -266,12 +320,13 @@ document.addEventListener('DOMContentLoaded', function() {
             orderStatus: "주문접수",
             uId: currentUserId || "guest",
             storeName: storeName,
-            orderItemList: orderItems
+            orderItemList: orderItems,
+            requestText: requestText
         };
     }
 
     // ==========================================
-    // 6. ⭐ [핵심] 결제 요청 (API 호출)
+    // 7. ⭐ [핵심] 결제 요청 (API 호출)
     // ==========================================
     async function handlePayment() {
         if (isProcessingPayment) return;

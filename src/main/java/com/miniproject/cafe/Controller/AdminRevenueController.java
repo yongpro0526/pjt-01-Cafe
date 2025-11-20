@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -23,8 +24,9 @@ public class AdminRevenueController {
     public String adminRevenue(HttpSession session, Model model,
                                @RequestParam(required=false) String date) {
         // 로그인 상태 체크
-        boolean isLoggedIn = session.getAttribute("adminId") != null;
+        boolean isLoggedIn = session.getAttribute("admin") != null;
         model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("activePage", "revenue");
 
         // 로그인 안 되어 있으면 로그인 페이지로 이동
         if (!isLoggedIn) {
@@ -42,6 +44,17 @@ public class AdminRevenueController {
 
         return "admin_revenue";
     }
+
+    @GetMapping("/revenue/orders")
+    @ResponseBody
+    public List<AdminRevenueVO> getRevenueOrders(@RequestParam(required = false) String date) {
+        if(date == null || date.isEmpty()) {
+            return adminRevenueService.getAllOrders();
+        } else {
+            return adminRevenueService.getOrdersByDate(date);
+        }
+    }
+
 
 
 }

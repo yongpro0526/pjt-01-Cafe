@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let userRegion = document.getElementById('userRegion');
     let orderBtn = document.getElementById('orderBtn');
+    const isHomePage =
+        window.location.pathname === '/home' ||
+        window.location.pathname === '/home/';
 
 
     /* ===========================
@@ -73,17 +76,113 @@ document.addEventListener('DOMContentLoaded', () => {
             const resp = await fetch("/home/getRegion");
             const storeName = await resp.text();
 
-            if (storeName && storeName !== "null") {
+            if (storeName && storeName !== "null" && storeName.trim() !== "") {
                 userRegion.value = storeName;
             } else {
-                userRegion.value = "selecting";
+                userRegion.value = "none";
             }
         } catch (e) {
             console.error("getRegion error:", e);
         }
     }
-
     initRegionSelect(); // 실행
+
+    function connectSSE(url) {
+
+        let es = new EventSource(url);
+
+        es.onopen = () => console.log("[USER SSE] Connected");
+
+        es.onerror = () => {
+            console.warn("[USER SSE] Disconnected → Reconnecting in 3s...");
+            es.close();
+            setTimeout(() => connectSSE(url), 3000);
+        };
+
+        // 서버 연결 확인 이벤트
+        es.addEventListener("connect", (e) => {
+            console.log("[USER SSE] connect event:", e.data);
+        });
+
+        // 주문완료 이벤트 수신
+        es.addEventListener("order-complete", async (event) => {
+            console.log("[USER SSE] 주문완료:", event.data);
+
+            showNotification("주문이 완료되었습니다!");
+            await loadUserOrders();
+        });
+
+        return es;
+    }
+
+    async function initUserSSE() {
+
+        if (typeof IS_LOGGED_IN === 'undefined' || !IS_LOGGED_IN) return;
+
+        const regionResp = await fetch("/home/getRegion");
+        const storeName = await regionResp.text();
+
+        if (!storeName || storeName === "null" || storeName.trim() === "") {
+            console.log("[USER SSE] 매장 미선택 → SSE 중지");
+            return;
+        }
+
+        connectSSE(`/sse/user/${USER_ID}`);
+    }
+
+    initUserSSE();
+
+    function showNotification(message) {
+        const popup = document.getElementById('notification-popup');
+        const text = popup.querySelector('.popup-text');
+
+        if (!popup || !text) return;
+
+        text.innerText = message;
+
+        popup.classList.add('show');
+
+        setTimeout(() => {
+            popup.classList.remove('show');
+        }, 3000);
+    }
+
+    async function loadUserOrders() {
+
+        if (typeof USER_ID === 'undefined' || !USER_ID) return;
+
+        try {
+            const resp = await fetch(`/api/orders/user-list?memberId=${USER_ID}`);
+            const list = await resp.json();
+
+            // 주문 기록이 없는 경우
+            if (list.length === 0) {
+                showNotification("주문내역이 없습니다.");
+                return;
+            }
+
+            // 주문 기록이 있을 때
+            const container = document.getElementById("user-order-list");
+            if (!container) return;
+
+            container.innerHTML = "";
+
+            list.forEach(order => {
+                const div = document.createElement("div");
+                div.classList.add("order-item");
+                div.innerHTML = `
+                <div class='order-title'>주문번호 #${order.orderId}</div>
+                <div class='order-date'>${order.orderTime}</div>
+                <div class='order-status'>${order.orderStatus}</div>
+            `;
+                container.appendChild(div);
+            });
+
+        } catch (e) {
+            console.error("[주문내역 로드 실패]", e);
+        }
+    }
+    loadUserOrders();
 
 
     /* ============================================================
@@ -97,86 +196,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ region })
-            }).catch(err => console.error(err));
+            })
+                .then(() => console.log("매장 정보 저장:", region))
+                .catch(err => console.error(err));
         });
     }
+
 
 
     /* ============================================================
        3. 주문하기 버튼 (로그인 확인 + 지점 확인)
     ============================================================ */
 
-    async function moveToMenuBySession() {
+    async function checkAndGoToMenu() {
+
         try {
-            const response = await fetch('/home/getRegion');
+            const resp = await fetch("/home/getRegion");
+            const storeName = await resp.text();
 
-            if (!response.ok) throw new Error("Network response was not ok");
-
-            const storeName = await response.text();
-
-            console.log("%c[DEBUG] 주문하기 버튼 클릭됨", "color: yellow; background: black; font-weight: bold;");
-            console.log("👉 서버 세션에서 가져온 storeName 값:", storeName);
-            console.log("👉 값의 타입:", typeof storeName);
-
-            if (storeName && storeName !== 'null' && storeName.trim() !== '' && storeName !== 'selecting') {
-                console.log("선택된 매장:", storeName);
-                window.location.href = '/menu/coffee';
-            } else {
+            if (!storeName || storeName === "null" || storeName.trim() === "") {
                 alert("주문할 매장을 먼저 선택해주세요.");
                 window.location.href = '/home/';
+                return false;
             }
 
-        } catch (error) {
-            console.error("세션 확인 중 오류:", error);
-            alert("매장 정보를 확인하는 중 오류가 발생했습니다.");
-            window.location.href = '/home/';
-        }
-    }
-
-    function moveToMenuImmediate() {
-        // 1. HTML에 숨겨진 hidden input 찾기 (스크린샷에 있는 그 태그!)
-        const storeNameInput = document.getElementById('layoutStoreName');
-        const storeName = storeNameInput ? storeNameInput.value : null;
-
-        // 2. 값이 있는지 확인
-        if (storeName && storeName.trim() !== '' && storeName !== 'null') {
-            console.log("✅ 선택된 매장(화면):", storeName);
-            // 매장이 있으니 바로 메뉴판으로 이동
             window.location.href = '/menu/coffee';
-        } else {
-            console.log("❌ 매장 정보 없음");
-            alert("주문할 매장을 먼저 선택해주세요.");
+            return true;
+
+        } catch (error) {
+            console.error("매장 확인 오류:", error);
+            alert("매장 정보를 확인할 수 없습니다.");
             window.location.href = '/home/';
+            return false;
         }
     }
 
     if (orderBtn) {
-        orderBtn.addEventListener("click", (e) => {
+        orderBtn.addEventListener("click", async (e) => {
             e.preventDefault();
 
-            // 1) 로그인 여부 확인 (기존 로직 유지)
             if (typeof IS_LOGGED_IN !== 'undefined' && !IS_LOGGED_IN) {
-                const loginModalOverlay = document.getElementById("login-modal-overlay");
-                if (loginModalOverlay) {
-                    loginModalOverlay.classList.add("show");
-                    const closeBtn = document.getElementById("login-modal-close");
-                    if(closeBtn) closeBtn.onclick = () => loginModalOverlay.classList.remove("show");
-                } else {
-                    alert("로그인이 필요합니다.");
-                    window.location.href = "/home/";
-                }
+                const overlay = document.getElementById("login-modal-overlay");
+                if (overlay) overlay.classList.add("show");
                 return;
             }
 
-            // 2) 로그인 통과 시 -> 화면 값 읽어서 바로 이동
-            moveToMenuImmediate();
+            await checkAndGoToMenu();
         });
     }
 
-    /* ===========================
+   /* /!* ===========================
        🔐 로그인/회원가입 모달 로직
        (로그인 상태가 아닐 때만 동작)
-    ============================*/
+    ============================*!/
     if (typeof IS_LOGGED_IN !== 'undefined' && !IS_LOGGED_IN) {
 
         // 로그인 버튼 클릭
@@ -211,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        /* 이메일 중복확인 */
+        /!* 이메일 중복확인 *!/
         if (checkEmailButton) {
             checkEmailButton.addEventListener('click', async () => {
                 const email = signupEmailInput.value;
@@ -251,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        /* 비밀번호 일치 검사 */
+        /!* 비밀번호 일치 검사 *!/
         const passwordInput = document.getElementById('signup-password');
         const passwordCheckInput = document.getElementById('signup-password-check');
 
@@ -273,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (passwordInput) passwordInput.addEventListener('input', validatePasswords);
         if (passwordCheckInput) passwordCheckInput.addEventListener('input', validatePasswords);
 
-        /* 회원가입 폼 제출 */
+        /!* 회원가입 폼 제출 *!/
         if (signupForm) {
             signupForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -317,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-    }
+    }*/
 
     /* 로그인 권한 보호 링크 */
     let loginRequiredLinks = document.querySelectorAll('.login-required');
@@ -330,14 +402,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* ===========================
-       🔥 일반 로그인 실패 시 모달 자동 열기
-       (?error 파라미터 존재 시)
-    ============================*/
-    // oauthError가 없을 때만 작동
-    if (!oauthError && params.has("error")) {
+    /*if (!oauthError && params.has("error")) {
         if (loginModalOverlay) loginModalOverlay.classList.add("show");
-    }
+    }*/
 
 });
 
@@ -368,8 +435,10 @@ function displaySuccessMessage(formElement, field, message) {
     let target = formElement.querySelector(`.success-message[data-field="${field}"]`);
     if (target) target.textContent = message;
 }
+
 function setVh() {
     document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
 }
+
 setVh();
 window.addEventListener('resize', setVh);

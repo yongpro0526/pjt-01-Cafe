@@ -34,7 +34,6 @@ public class UserLikeServiceImpl implements UserLikeService {
 
     @Override
     public List<MenuVO> getLikedMenus(String userId) {
-        System.out.println("찜 리스트 조회 userId = " + userId);
         return userLikeMapper.getLikedMenus(userId);
     }
 

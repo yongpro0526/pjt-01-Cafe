@@ -23,7 +23,9 @@
 
                 <!-- 찜 메뉴 반복 출력 -->
                 <div th:each="item : ${likedMenus}" class="menu-item" th:data-menu-id="${item.menuId}">
-                    <img th:src="@{'/images/img/' + ${item.menuImg}}" class="menu-image">
+                    <img th:src="@{'/upload/menuImg/' + ${item.menuImg}}"
+                         th:alt="${item.menuName}"
+                         class="menu-image">
 
                     <div class="menu-details">
                         <div class="menu-name" th:text="${item.menuName}"></div>
@@ -43,7 +45,8 @@
             </div>
 
         </main>
-        <script src="/js/mypick.js"></script>
+
     </div>
 </th:block>
+<script src="/js/mypick.js"></script>
 </html>

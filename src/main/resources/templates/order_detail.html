@@ -7,8 +7,9 @@
         <input type="hidden" id="detailMemberId"
                th:value="${#authentication.name != 'anonymousUser' ? #authentication.name : 'guest'}">
         <div class="coffee-img">
-            <img th:src="@{|/images/img/${menu.menuImg}|}"
-               th:alt="${menu.menuName}">
+            <img th:src="@{'/upload/menuImg/' + ${menu.menuImg}}"
+                 th:alt="${menu.menuName}"
+                 class="menu-image">
         </div>
         <h1 th:text="${menu.menuName}">메뉴 이름</h1>
         <p class="desc" th:utext="${menu.menuDefinition}">메뉴 설명</p>

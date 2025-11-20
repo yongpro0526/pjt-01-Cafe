@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <title>관리자 회원가입창 - Java Cafe</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
     <link rel="stylesheet" href="/css/admin_signup.css">
 </head>
 
 <body>
-
-<th:block th:replace="~{./include/adminBaseLayout :: setContent( ~{:: .wrap} ) }">
-
+    <header class="top-bar">
+        <div class="logo-section">
+            <span class="logo-icon">☕</span>
+            <span class="logo-text">JavaBean Admin</span>
+        </div>
+    </header>
     <div class="wrap">
         <div class="signup-container">
             <form id="signupForm" action="/admin/joinForm" method="post">
@@ -54,9 +58,6 @@
             </form>
         </div>
     </div>
-
-</th:block>
-
 </body>
 <script src="/js/admin_signup.js"></script>
 </html>
