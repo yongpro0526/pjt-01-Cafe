@@ -167,7 +167,11 @@ public class MenuController {
     @GetMapping("/search")
     public String searchMenu(@RequestParam("keyword") String keyword,
                              HttpSession session,
-                             Model model) {
+                             Model model,
+                             Authentication auth) {
+
+        boolean isLoggedIn = isLoggedIn(auth);
+        model.addAttribute("IS_LOGGED_IN", isLoggedIn);
 
         String storeName = getStoreNameFromSession(session);
 
