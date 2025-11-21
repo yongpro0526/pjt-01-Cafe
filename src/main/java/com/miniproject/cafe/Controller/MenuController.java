@@ -30,9 +30,11 @@ public class MenuController {
 
     private String getStoreNameFromSession(HttpSession session) {
         String storeName = (String) session.getAttribute("storeName");
+
         if (storeName == null || storeName.equals("selecting")) {
             return null;
         }
+
         return storeName;
     }
 
@@ -48,11 +50,13 @@ public class MenuController {
         }
 
         String storeName = getStoreNameFromSession(session);
+
         if (storeName == null) {
-            return "redirect:/home/";
+            return "redirect:/home?msg=지점을+선택해주세요";
         }
 
         List<MenuVO> items = menuService.getMenuByStoreAndCategory(storeName, "커피");
+
         model.addAttribute("menuItems", items);
         model.addAttribute("storeName", storeName);
 
@@ -71,11 +75,13 @@ public class MenuController {
         }
 
         String storeName = getStoreNameFromSession(session);
+
         if (storeName == null) {
-            return "redirect:/home/";
+            return "redirect:/home?msg=지점을+선택해주세요";
         }
 
         List<MenuVO> items = menuService.getMenuByStoreAndCategory(storeName, "음료");
+
         model.addAttribute("menuItems", items);
         model.addAttribute("storeName", storeName);
 
@@ -94,11 +100,13 @@ public class MenuController {
         }
 
         String storeName = getStoreNameFromSession(session);
+
         if (storeName == null) {
             return "redirect:/home/";
         }
 
         List<MenuVO> items = menuService.getMenuByStoreAndCategory(storeName, "푸드");
+
         model.addAttribute("menuItems", items);
         model.addAttribute("storeName", storeName);
 
@@ -117,11 +125,13 @@ public class MenuController {
         }
 
         String storeName = getStoreNameFromSession(session);
+
         if (storeName == null) {
-            return "redirect:/home/";
+            return "redirect:/home?msg=지점을+선택해주세요";
         }
 
         List<MenuVO> items = menuService.getMenuByStoreAndCategory(storeName, "티");
+
         model.addAttribute("menuItems", items);
         model.addAttribute("storeName", storeName);
 
@@ -140,14 +150,42 @@ public class MenuController {
         }
 
         String storeName = getStoreNameFromSession(session);
+
         if (storeName == null) {
             return "redirect:/home/";
         }
 
         List<MenuVO> items = menuService.getMenuByStoreAndCategory(storeName, "신메뉴");
+
         model.addAttribute("menuItems", items);
         model.addAttribute("storeName", storeName);
 
         return "menu/newMenu";
     }
+
+    /** ------------------ 검색창 --------------------- **/
+    @GetMapping("/search")
+    public String searchMenu(@RequestParam("keyword") String keyword,
+                             HttpSession session,
+                             Model model,
+                             Authentication auth) {
+
+        boolean isLoggedIn = isLoggedIn(auth);
+        model.addAttribute("IS_LOGGED_IN", isLoggedIn);
+
+        String storeName = getStoreNameFromSession(session);
+
+        if (storeName == null) {
+            return "redirect:/home?msg=지점을+선택해주세요";
+        }
+
+        List<MenuVO> result = menuService.searchMenu(storeName, keyword);
+
+        model.addAttribute("searchResult", result);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("storeName", storeName);
+
+        return "menu_search";
+    }
+
 }

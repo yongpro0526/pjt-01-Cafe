@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>메뉴 검색 결과</title>
+    <link rel="stylesheet" href="/css/menu_search.css">
+</head>
+
+<th:block th:replace="~{./include/userBaseLayout :: setContent(~{:: .wrap})}">
+    <div class="wrap">
+
+        <h2 style="text-align:center; margin:20px 0;"
+            th:text="'검색 결과: ' + ${keyword}"></h2>
+
+        <th:block th:if="${#lists.isEmpty(searchResult)}">
+            <p style="text-align:center; margin-top:50px;">검색 결과가 없습니다.</p>
+        </th:block>
+
+        <div class="menu-list-container">
+            <a th:each="item : ${searchResult}"
+               th:href="@{/home/order_detail(id=${item.menuId})}"
+               class="menu-link">
+
+                <div class="menu-item">
+                    <img th:src="@{'/upload/menuImg/' + ${item.menuImg}}"
+                         class="menu-image">
+
+                    <div class="menu-details">
+                        <div th:text="${item.menuName}" class="menu-name"></div>
+                        <div th:text="${item.menuPrice + '원'}" class="menu-price"></div>
+                    </div>
+                </div>
+
+            </a>
+        </div>
+
+    </div>
+</th:block>
+</html>

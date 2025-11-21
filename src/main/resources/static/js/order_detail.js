@@ -255,72 +255,44 @@ function initActionButtons() {
         orderBtn.addEventListener('click', async (e) => {
             e.preventDefault();
 
+            // 장바구니 담기 로직 재사용
+            const data = collectCurrentState();
+
+            if (!data.menuId) {
+                alert("메뉴 정보를 찾을 수 없습니다.");
+                return;
+            }
+
+            // 장바구니용 데이터 구조
+            const cartPayload = {
+                menuId: data.menuId,
+                quantity: data.quantity,
+                temp: data.temp,
+                tumblerUse: data.tumblerUse,
+                shotCount: data.shotCount,
+                vanillaSyrupCount: data.vanillaSyrupCount,
+                whippedCreamCount: data.whippedCreamCount
+            };
+
             try {
-                // 값 안전하게 읽기
-                const storeName = document.getElementById('detailStoreName')?.value || "";
-                const uId = USER_ID || "guest";
-
-                const menuId = document.getElementById('menuId')?.value;
-                const menuName = document.getElementById('menuName')?.textContent || "메뉴";
-                const quantity = parseInt(document.getElementById('qty')?.textContent || "1");
-                const totalPrice = parseInt((priceEl?.textContent || "0").replace(/[^0-9]/g, ''));
-
-                const temp = document.querySelector('.segmented-btn.active')?.dataset.value || "ICE";
-
-                const tumblerUse = document.getElementById('tumbler')?.checked ? 1 : 0;
-                const shot = appliedOptionCounts['샷 추가'] || 0;
-                const vanilla = appliedOptionCounts['바닐라 시럽 추가'] || 0;
-                const cream = appliedOptionCounts['휘핑 크림 추가'] || 0;
-
-                if (!storeName) {
-                    alert("매장을 먼저 선택해주세요.");
-                    return;
-                }
-                if (!menuId) {
-                    alert("메뉴 정보가 없습니다.");
-                    return;
-                }
-
-                const orderPayload = {
-                    totalQuantity: quantity,
-                    totalPrice: totalPrice,
-                    orderType: "매장",
-                    orderStatus: "주문접수",
-                    uId: uId,
-                    storeName: storeName,
-                    orderItemList: [
-                        {
-                            menuId: menuId,
-                            menuItemName: menuName,
-                            quantity: quantity,
-                            temp: temp,
-                            tumbler: tumblerUse,
-                            shot: shot,
-                            vanillaSyrup: vanilla,
-                            whippedCream: cream
-                        }
-                    ]
-                };
-
-                const response = await fetch("/api/orders/create", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(orderPayload)
+                const response = await fetch('/home/cart/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cartPayload)
                 });
 
-                if (!response.ok) {
-                    throw new Error("서버 오류");
+                const result = await response.json();
+
+                if (result.success) {
+                    // ✅ 변경: 확인 없이 바로 장바구니 페이지로 이동
+                    window.location.href = '/home/cart';
+                } else {
+                    alert('주문 추가 실패: ' + result.message);
                 }
-
-                alert("주문이 성공적으로 접수되었습니다!");
-
-                window.location.href = "/home/";
-
             } catch (err) {
                 console.error("주문 오류:", err);
                 alert("주문 처리 중 오류가 발생했습니다.");
             }
-
         });
     }
 }

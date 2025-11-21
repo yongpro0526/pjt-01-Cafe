@@ -18,6 +18,13 @@
             <a th:href="@{/menu/food(region=${region})}">푸드</a>
         </nav>
 
+        <div class="search-box">
+            <form action="/menu/search" method="get" class="search-form">
+                <input type="text" name="keyword" placeholder="메뉴 검색" required>
+                <button type="submit" class="search-btn">검색</button>
+            </form>
+        </div>
+
         <!-- 메뉴 목록 -->
         <main class="main-content">
             <div class="menu-list-container">

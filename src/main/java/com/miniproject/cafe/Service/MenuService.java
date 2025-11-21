@@ -14,4 +14,5 @@ public interface MenuService {
     void deleteMenuByStore(String menuId, String storeName);
     String getLastMenuIdByStore(String storeName);
     void updateSalesStatus(String menuId, String storeName, String saleStatus);
+    List<MenuVO> searchMenu(String storeName, String keyword);
 }

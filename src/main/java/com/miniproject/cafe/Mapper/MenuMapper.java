@@ -19,5 +19,6 @@ public interface MenuMapper {
     void deleteMenuByStore(String menuId, String storeName);
     String getLastMenuIdByStore(String storeName);
     void updateSalesStatus(String menuId, String storeName, String salesStatus);
-
+    List<MenuVO> searchMenu(@Param("storeName") String storeName,
+                            @Param("keyword") String keyword);
 }

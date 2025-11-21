@@ -54,4 +54,10 @@ public class MenuServiceImpl implements MenuService {
     public void updateMenu(MenuVO menuVO) {
         menuMapper.updateMenu(menuVO);
     }
+
+    @Override
+    public List<MenuVO> searchMenu(String storeName, String keyword) {
+        return menuMapper.searchMenu(storeName, keyword);
+    }
+
 }

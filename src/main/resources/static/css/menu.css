@@ -86,12 +86,24 @@
 }
 
 /* 메뉴 리스트 */
-.menu-list-container { padding: 10px 15px; }
-.menu-item {
-    display: flex; align-items: center; padding: 15px 0;
-    border-bottom: 1px solid #eee;
+.menu-list-container {
+    padding: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 100%;
+    box-sizing: border-box;
 }
-.menu-item:last-child { border-bottom: none; }
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: transparent;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
 
 .menu-image {
     width: 80px; height: 80px; border-radius: 8px; margin-right: 15px;
@@ -129,3 +141,38 @@
     font-weight: 700;
     color: #d93025 !important;
 }
+
+.search-box {
+    background-color: #fff;
+    padding: 15px;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+
+.search-form {
+    display: flex;
+    width: 90%;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #c9b19e;
+    border-radius: 8px 0 0 8px;
+    font-size: 15px;
+    outline: none;
+}
+
+.search-btn {
+    padding: 10px 15px;
+    background: #A47D5B;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+}
+
