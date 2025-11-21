@@ -84,10 +84,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 배달비 계산
         let currentDeliveryFee = 0;
-        let deliveryButton = document.querySelector('.delivery-btn[data-type="delivery"]');
-        if (deliveryButton && deliveryButton.classList.contains('active-delivery')) {
+        let deliveryButton = document.querySelector('.delivery-btn.active-delivery');
+        if (deliveryButton && deliveryButton.dataset.type === 'delivery') {
             currentDeliveryFee = fixedDeliveryFee;
         }
+        // 포장과 매장은 배달비 0원
 
         let deliveryFeeElement = document.getElementById('deliveryFee');
         if (deliveryFeeElement) {
@@ -191,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 배달/포장 토글 버튼
+    // 배달/포장/매장 토글 버튼
     let deliveryToggle = document.querySelector('.delivery-toggle');
     if (deliveryToggle) {
         deliveryToggle.addEventListener('click', function(e) {
@@ -245,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 5. ⭐ [핵심] 주문 데이터 생성 (OrderVO 구조 맞춤)
+    // 5. ⭐ [핵심] 주문 데이터 생성 (OrderVO 구조 맞춤) - 수정된 부분
     // ==========================================
     function preparePaymentData(selectedItems) {
         let storeNameInput = document.getElementById('currentStoreName');
@@ -304,9 +305,19 @@ document.addEventListener('DOMContentLoaded', function() {
             totalQty += qty;
         });
 
-        // 2. 주문 유형 (배달/포장) 확인
+        // 2. 주문 유형 (배달/포장/매장) 확인
         let deliveryBtn = document.querySelector('.delivery-btn.active-delivery');
-        let orderType = (deliveryBtn && deliveryBtn.dataset.type === 'delivery') ? "배달" : "포장";
+        let pickupMethod = "포장"; // 기본값
+
+        if (deliveryBtn) {
+            if (deliveryBtn.dataset.type === 'delivery') {
+                pickupMethod = "배달";
+            } else if (deliveryBtn.dataset.type === 'packaging') {
+                pickupMethod = "포장";
+            } else if (deliveryBtn.dataset.type === 'store') {
+                pickupMethod = "매장";
+            }
+        }
 
         // 3. 총 결제 금액 (화면에 계산된 최종 금액에서 숫자만 추출)
         let totalStr = document.getElementById('finalTotalPrice').textContent;
@@ -316,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return {
             totalQuantity: totalQty,
             totalPrice: finalPrice,
-            orderType: orderType,
+            orderType: pickupMethod, // "배달", "포장", "매장" 중 하나
             orderStatus: "주문접수",
             uId: currentUserId || "guest",
             storeName: storeName,

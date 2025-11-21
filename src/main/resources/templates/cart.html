@@ -66,24 +66,24 @@
                                 <p class="item-options"
                                    th:if="${item['TUMBLER_USE'] == true or item['TUMBLER_USE'] == 1 or item['SHOT_COUNT'] > 0 or item['VANILLA_SYRUP_COUNT'] > 0 or item['WHIPPED_CREAM_COUNT'] > 0}">
 
-                                <span th:if="${item['TUMBLER_USE'] == true or item['TUMBLER_USE'] == 1}">
-                                    텀블러 사용
-                                    <span th:if="${item['SHOT_COUNT'] > 0 or item['VANILLA_SYRUP_COUNT'] > 0 or item['WHIPPED_CREAM_COUNT'] > 0}"> | </span>
+                                    <span th:if="${item['TUMBLER_USE'] == true or item['TUMBLER_USE'] == 1}">
+                                        텀블러 사용
+                                        <span th:if="${item['SHOT_COUNT'] > 0 or item['VANILLA_SYRUP_COUNT'] > 0 or item['WHIPPED_CREAM_COUNT'] > 0}"> | </span>
+                                    </span>
+
+                                    <span th:if="${item['SHOT_COUNT'] > 0}">
+                                        샷 추가([[${item['SHOT_COUNT']}]])(+[[${item['SHOT_COUNT'] * 500}]]원)
+                                        <span th:if="${item['VANILLA_SYRUP_COUNT'] > 0 or item['WHIPPED_CREAM_COUNT'] > 0}"> | </span>
+                                    </span>
+
+                                    <span th:if="${item['VANILLA_SYRUP_COUNT'] > 0}">
+                                        바닐라 시럽([[${item['VANILLA_SYRUP_COUNT']}]])(+[[${item['VANILLA_SYRUP_COUNT'] * 500}]]원)
+                                        <span th:if="${item['WHIPPED_CREAM_COUNT'] > 0}"> | </span>
                                 </span>
 
-                                <span th:if="${item['SHOT_COUNT'] > 0}">
-                                    샷 추가([[${item['SHOT_COUNT']}]])(+[[${item['SHOT_COUNT'] * 500}]]원)
-                                    <span th:if="${item['VANILLA_SYRUP_COUNT'] > 0 or item['WHIPPED_CREAM_COUNT'] > 0}"> | </span>
-                                </span>
-
-                                <span th:if="${item['VANILLA_SYRUP_COUNT'] > 0}">
-                                    바닐라 시럽([[${item['VANILLA_SYRUP_COUNT']}]])(+[[${item['VANILLA_SYRUP_COUNT'] * 500}]]원)
-                                    <span th:if="${item['WHIPPED_CREAM_COUNT'] > 0}"> | </span>
-                                </span>
-
-                                <span th:if="${item['WHIPPED_CREAM_COUNT'] > 0}">
-                                    휘핑크림([[${item['WHIPPED_CREAM_COUNT']}]])(+[[${item['WHIPPED_CREAM_COUNT'] * 500}]]원)
-                                </span>
+                                    <span th:if="${item['WHIPPED_CREAM_COUNT'] > 0}">
+                                        휘핑크림([[${item['WHIPPED_CREAM_COUNT']}]])(+[[${item['WHIPPED_CREAM_COUNT'] * 500}]]원)
+                                    </span>
                                 </p>
                             </div>
 
@@ -111,6 +111,7 @@
                     <div class="delivery-toggle">
                         <button class="delivery-btn active-delivery" data-type="delivery">배달</button>
                         <button class="delivery-btn" data-type="packaging">포장</button>
+                        <button class="delivery-btn" data-type="store">매장</button>
                     </div>
 
                     <div class="section-container request-section">
@@ -171,7 +172,7 @@
                             <span class="label total-label">총 가격</span>
                             <span class="value total-amount" id="finalTotalPrice">0원</span>
                         </div>
-                        <button class="payment-btn">결제하기</button>
+                        <button class="payment-btn" id="paymentBtn">결제하기</button>
                     </div>
                 </div>
             </main>
