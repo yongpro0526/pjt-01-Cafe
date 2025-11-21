@@ -118,21 +118,28 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
+
         http
                 .securityMatcher("/admin/**")
-                .authenticationProvider(adminProvider())
                 .csrf(csrf -> csrf.disable())
+                .authenticationProvider(adminProvider())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/admin/login", "/admin/signup", "/admin/joinForm",
-                                "/admin/checkId", "/admin/css/**", "/admin/js/**"
+                                "/admin/login",
+                                "/admin/signup",
+                                "/admin/joinForm",
+                                "/admin/checkId",
+                                "/admin/css/**",
+                                "/admin/js/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/admin/login")
                         .loginProcessingUrl("/admin/perform_login_process")
-                        .defaultSuccessUrl("/admin/orders", true)
+                        .usernameParameter("id")
+                        .passwordParameter("pw")
+                        .defaultSuccessUrl("/admin/orders", false)
                         .failureHandler(formLoginFailureHandler)
                 )
                 .logout(logout -> logout

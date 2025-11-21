@@ -8,7 +8,7 @@
 </head>
 
 <script th:inline="javascript">
-    const storeName = /*[[${session.admin.storeName}]]*/ "";
+    const storeName = /*[[${#authentication.principal.storeName}]]*/ "";
 </script>
 
 <th:block th:replace="~{./include/adminBaseLayout :: setContent( ~{:: .wrap} ) }">

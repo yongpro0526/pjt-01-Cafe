@@ -26,9 +26,11 @@ public class AdminUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Admin not found: " + username);
         }
 
-        return User.withUsername(admin.getId())
-                .password(admin.getPassword())
-                .authorities(Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")))
-                .build();
+        return new CustomAdminUser(
+                admin.getId(),
+                admin.getPassword(),
+                admin.getStoreName(),
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        );
     }
 }
